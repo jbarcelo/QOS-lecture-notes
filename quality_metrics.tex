@@ -41,12 +41,42 @@ Short time over short distances.
 And very long when it involves a trip to a geostationary satellite.
 \end{enumerate}
 
+\section{Jitter}
+Jitter is the variation of delay.
+This aspect is specially relevant for real-time and streaming applications.
+These applications expect the packets to arrive regularly in time.
+As an example, if the encoder application takes a voice stream and splits it into 20 ms chunks that are encoded and sent as packets, the receiver application will expect to receive one packet every 20 ms to reconstruct the voice stream.
+
+If packets are sent every 20 ms but each of them requires a different time to traverse the network, the separation between packets will no longer be 20 ms at the receiving end.
+Applications sensitive to jitter use a de-jittering buffer that holds some packets and feeds the decoder at regular intervals.
+The packets that suffered a short delay in the network will wait for a longer time in the de-jitter buffer and the packets that suffered a longer delay in the network stay in the buffer for a shorter time.
+With this technique, jitter is effectively suppressed at the expense of increasing delay.
+
 \section{Round Trip Delay}
 
 The round trip delay is the measure of delay used for elastic and interactive applications.
+It is the time required for a packet from source to destination and then back to the source again.
+You can easily find the round trip delay from your host using the ping command.
+
+\begin{lstlisting}
+$ ping www.happyforecast.com
+PING happyforecast.com (184.107.100.65) 56(84) bytes of data.
+64 bytes from s106.panelboxmanager.com (184.107.100.65): icmp_req=1 ttl=48 time=122 ms
+64 bytes from s106.panelboxmanager.com (184.107.100.65): icmp_req=2 ttl=48 time=121 ms
+64 bytes from s106.panelboxmanager.com (184.107.100.65): icmp_req=3 ttl=48 time=122 ms
+64 bytes from s106.panelboxmanager.com (184.107.100.65): icmp_req=4 ttl=48 time=122 ms
+64 bytes from s106.panelboxmanager.com (184.107.100.65): icmp_req=5 ttl=48 time=122 ms
+64 bytes from s106.panelboxmanager.com (184.107.100.65): icmp_req=6 ttl=48 time=121 ms
+^C
+--- happyforecast.com ping statistics ---
+6 packets transmitted, 6 received, 0% packet loss, time 5004ms
+rtt min/avg/max/mdev = 121.864/122.066/122.181/0.230 ms
+\end{lstlisting}
+
 An interactive application (such as web browsing) requires a few round trip delays to complete the dialogue between the client and the server.
 Furthermore, the round trip delay also limits how fast the TCP congestion window can grow.
 The congestion window grows upon the reception of TCP acknowledgements.
 If it takes long for the TCP acks to arrive, the congestion window grows slowly.
 
-
+In fact, it becomes difficult to take fully advantage of connections with a high \mbox{bandwidth x delay} product.
+These are known as ``long fat pipes'' or ``long fat networks'' (which is shortened as LFN and sometimes pronounced elephant), as explained in RFC 1072 \cite{rfc1072}.
