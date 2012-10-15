@@ -15,6 +15,7 @@ The measures will also differ depending whether 5 minutes averages or 1 hour ave
 This makes the specification of SLAs tricky.
 
 \section{Delay}
+
 Delay is the time that it is required to traverse the network from the entry point to the exit point.
 Delay is normally considered for real-time services such as voice over IP (VoIP).
 The total end-to-end delay is simply the sum of the delay suffered in each of the hops in the data network.
@@ -39,4 +40,13 @@ Short in high-speed transmission media.
 Short time over short distances. 
 And very long when it involves a trip to a geostationary satellite.
 \end{enumerate}
+
+\section{Round Trip Delay}
+
+The round trip delay is the measure of delay used for elastic and interactive applications.
+An interactive application (such as web browsing) requires a few round trip delays to complete the dialogue between the client and the server.
+Furthermore, the round trip delay also limits how fast the TCP congestion window can grow.
+The congestion window grows upon the reception of TCP acknowledgements.
+If it takes long for the TCP acks to arrive, the congestion window grows slowly.
+
 
