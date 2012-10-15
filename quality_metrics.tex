@@ -1,0 +1,186 @@
+\chapter{About the course}
+
+\section{Course Data}
+
+Code: 21738
+
+Course name: ``Protocols de qualitat de servei en xarxes''
+
+Teacher: Jaume Barcelo
+
+Credits: 4
+
+Year: 3rd year
+
+Trimester: Spring
+
+\section{Introduction}
+This is a course on Quality of Service in data networks, which is usually abbreviated as QoS.
+QoS is about discriminating traffic.
+It is about favouring some data packets at the expense of others.
+The name can be misleading, as one might think that all packets are benefited from the implementation of QoS.
+This is not the case.
+
+A good parallelism to understand QoS is road traffic.
+There are some vehicles (typically police, ambulance and firefighters) that receive priority over the others. 
+This is not perceived as something negative, as this vehicles incur in tasks that are more important or urgent than the average vehicle.
+
+This parallelism is very illustrative to convey the idea, that QoS does not make the road wider, it simply prioritizes some traffic.
+
+At some point, networks engineers may face the dilemma of investing their efforts and money in either implementing QoS (prioritizing traffic) or increasing the available bandwidth (making the road wider).
+The latter option has the advantage that it benefits all the traffic of the network.
+Ideally, if the bandwidth is sufficiently over-provisioned, the packets never have to wait in the routers queues.
+In the road analogy, if the roads are wide enough, there are never traffic jams.
+
+Unfortunately, making the roads wider or the networks faster does not always solve the problem.
+As the users perceive that there is plenty of bandwidth available, they might decide to put it a better use by downloading collections of movies that they will never have time to see.
+There is nothing wrong with downloading collections of movies, but the sheer volumes of data may fill up the queues and introduce unacceptable delay and jitter in VoIP calls.
+
+And why is this a problem? Well, at some point network engineers that deploying separate networks for each service represented too much work (and money).
+From an engineering and economic point of view, it is much more advantageous to offer the different services on a single network.
+It is common nowadays that telephony, video-conference, web, remote backup and file sharing services share the same network.
+The term to refer to these networks that support various services is ``converged networks''.
+The only problem is that the different services have totally different requirements with regards to required bandwidth and delay.
+
+The service that consume a large amount of bandwidth and do not have strict delay requirements can easily create a ``traffic jam'' that prevents the offering of services with low delay requirements that consume very little amount of bandwidth.
+Obviously, it is still possible to offer the two kinds of service simultaneously if we implement QoS mechanisms that prioritizes the low delay traffic.
+
+QoS is a controversial topic.
+Net neutrality, which is related to QoS is even more controversial \cite{bachula2006}.
+Nevertheless, QoS (or ``bandwidth management'') has been used by ISPs in practice \cite{cooper2011bum}.
+We will try to cover the subject from a neutral point of view and you, equipped with the knowledge of the course, will take your own decision about the usefulness of QoS.
+
+The course is divided in three conceptually different parts: lectures, seminars and lab assignments.
+In lectures I will introduce you to the nuts and bolts of QoS.
+In the seminars, we will review the concepts of queueing theory covered in previous courses, and extend them to consider different traffic classes.
+In the lab assignments you will implement some QoS tools and, when possible, validate them with the methods studied in the seminars.
+
+\section{Syllabus}
+\begin{itemize}
+  \item Lectures
+  \begin{enumerate}
+    \item Introduction to QoS
+    \item QoS Requirements
+    \item QoS Service Level Agreements
+    \item QoS Mechanics
+    \item QoS Architectures
+    \item Deploying Diffserv
+    \item Capacity Admission Control
+    \item SLA and Network Monitoring
+    \item Core Capacity and Traffic Engineering
+  \end{enumerate}
+  \item Seminars
+  \begin{enumerate}
+    \item Review of basic concepts. Exponential distribution. Poisson Traffic. Little's Theorem. PASTA theorem.
+    \item Delay in a network interface with Poisson arrivals, a single (finite) buffer and exponential transmission time.
+    \item Delay in a network interface with Poisson arrivals, two traffic classes and exponential transmission time. Preemptive priority and non-preemptive priority.
+    \item Delay in a network interface with a general transmission time. Priority queueing in a network with a general transmission time.
+  \end{enumerate}
+\item Lab Assignments
+  \begin{enumerate}
+    \item Program a UDP Poisson traffic generator and a traffic sink capable of computing delay (min/avg/max). Packet drop should also be measured.
+    \item Program a packet buffer. It should support both exponential and deterministic transmission time. The buffer size is taken as a parameter and it may be infinite.
+    \item Program a buffer that implements priority queueing. It should support both exponential and deterministic transmission time. The buffer size is taken as a parameter and it may be infinite.
+    \item Implement a QoS tool of your choice: policer, token bucket, leaky bucket.
+    \item Combine the different QoS elements that you and your classmates have programmed in a QoS enabled network. Invent an scenario, describe the requirements and explain how your solution addresses such requirements.
+  \end{enumerate}
+\end{itemize}
+
+\section{Bibliography}
+
+The lecture closely follow the book:
+
+John Evans, Clarence Filsfils ``Deploying IP and MPLS QoS for Multiservice Networks''.
+
+\section{Evaluation Criteria}
+
+The grading is distributed as follows:
+\begin{itemize}
+\item Lectures continuous assessment, 10\%
+\item Seminars continuous assessment, 10\%
+\item Blackboard problem solving, 10\%
+\item Lab assignments, 10\%
+\item Individual continuous assessment quiz, 10\%
+\item Final exam, 50\% (Possibility of re-take exam)
+\end{itemize}
+
+It is necessary to obtain a decent mark (4 out of 10 or 20 out of 50) in all the different evaluation aspects.
+To pass the course, 50 out of the total 100 points need to be obtained.
+
+\section{Survival guide}
+
+\subsection{How to pass the course}
+
+Statistically speaking, you will pass the course if you do all the following:
+\begin{itemize}
+\item Attend lectures, participate and ask questions.
+\item Attend seminars, try to solve the problems on your own and discuss them in small groups.
+\item Volunteer to solve problems on the blackboard.
+\item Attend labs and use lab time to solve the lab assignments.
+\item Participate in the planning and coding of the labs assignments. Read carefully the code of other team members and make sure you understand it and can explain it to others.
+\item Study for the continuous assessment quiz, as it is a warming up exercise to face the final exams with success guarantees.
+\end{itemize}
+
+\subsection{Continuous Assessment}
+In this course we implement continuous assessment.
+This means that if you work hard from day zero, the course will be pain-free.
+
+Continuous assessment includes multiple-choice quizzes in lectures and seminars.
+You also have to write reports in labs (one for each group).
+The source code and the report for the labs is submitted via moodle.
+Remember to write always your name and NIA in all the material you hand in or upload to moodle. 
+You also have to include you name and NIA in all the source code files you send me.
+
+There is not a template for the report.
+I recommend describing key design and implementation aspects, clarifying possible deviations or improvements on the initial assignment, and including examples.
+The example should include the input commands as well as the output results.
+The report and the code will be submitted at the end of the class via moodle.
+At the beginning of the next class, you will have to demonstrate that your programs actually work.
+
+\subsection{Collaboration Policy}
+You are encouraged to collaborate with other students in the resolution of problems and assignments.
+However, you should firs try to solve it on your own.
+Then, you can discuss your solution with others and work together to find a better solution.
+Finally, you must ensure that you can solve the problem or assignment alone.
+
+In the labs assignments you will work in teams of three people.
+Unless when explicit permission is given to re-use code, each team has to write their own code.
+
+\subsection{Formula Sheet}
+This course is not about memorizing equations.
+It is about understanding them.
+For this reason, you are allowed to use a \emph{formula sheet} in individual tests as long as it fulfills the following requirements:
+\begin{itemize}
+\item It is a single page (one side).
+\item It is handwritten. Your own handwriting.
+\item It is delivered together with your answers when the test is finished.
+\end{itemize}
+
+\subsection{Questions and doubts}
+I like to receive questions and comments.
+Normally, the best moment to express a doubt is during the class, as it is likely that many people in the class share the same doubt.
+If you feel that you have a question that needs to be discussed privately, we can discuss it right after the class.
+
+\subsection{Continuous feedback}
+At the end of the class, I will ask you to anonymously provide some feedback on the course. 
+In particular, I always want to know:
+\begin{itemize}
+\item What is the most interesting thing we have seen in class.
+\item What is the most confusing thing in the class.
+\item Any other comment you may want to add.
+
+In my previous experience, this information has proven to be invaluable in improving the course, detecting problems at an early stage, and adapting the course to the expectations of the students.
+
+In labs, I will ask each group to hand in a short (few paragraphs) description of the work carried out in class, and the members of the group that have attended the class.
+Note that this is different from the lab report, which is the one that it is actually graded.
+\end{itemize}
+
+\subsection{How to make you teacher happy}
+
+Avoid speaking while I am talking.
+It is not that you cannot talk in class.
+You can talk as much as you want when I am silent.
+I will make plenty of breaks in which I will ask you to discuss a question with your classmates.
+You can also take advantage of the moments in which I erase the blackboard or just scratch my head while staring.
+As long as I am not talking, you can talk with your classmates as much as you want.
+Obviously, questions are welcome at any time.
