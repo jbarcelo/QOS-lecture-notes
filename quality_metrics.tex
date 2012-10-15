@@ -50,7 +50,14 @@ As an example, if the encoder application takes a voice stream and splits it int
 If packets are sent every 20 ms but each of them requires a different time to traverse the network, the separation between packets will no longer be 20 ms at the receiving end.
 Applications sensitive to jitter use a de-jittering buffer that holds some packets and feeds the decoder at regular intervals.
 The packets that suffered a short delay in the network will wait for a longer time in the de-jitter buffer and the packets that suffered a longer delay in the network stay in the buffer for a shorter time.
-With this technique, jitter is effectively suppressed at the expense of increasing delay.
+With this technique, jitter is effectively suppressed at the expense of increasing delay, as shown in figure \ref{fig:dejitter}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{figures/dejitter.eps}
+\caption{The dejitter buffer removes jitter at the expense of adding delay.}
+\label{fig:dejitter}
+\end{figure}
 
 \section{Round Trip Delay}
 
