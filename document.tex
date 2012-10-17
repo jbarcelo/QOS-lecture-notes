@@ -12,6 +12,7 @@
 \usepackage{fancyhdr}
 \usepackage{listings}
 \lstset{breaklines=true}
+\usepackage[titletoc]{appendix}
 
 \pagestyle{fancy}
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
@@ -53,8 +54,13 @@
 %
 \input{about.tex}
 \input{quality_metrics.tex}
-\appendix
+\begin{appendices}
+\appendixpage
+\noappendicestocpagenum
+\addappheadtotoc
+
 \input{lab_assignments.tex}
+\end{appendices}
 \backmatter
 %
 \bibliographystyle{plain}
