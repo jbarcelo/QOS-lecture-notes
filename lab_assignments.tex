@@ -48,3 +48,30 @@ Combine the Buffer with the traffic generator and traffic sink modules to make m
 \label{fig:scenario}
 \end{figure}
 
+\section{Priority Queues}
+The third module that you have to construct in this course contains two priority queues (that include a dropper a buffer) and a scheduler.
+We will name $H$ the high priority queue and $L$ the low priority queue.
+
+Each module has to be a separate program. The different modules communicate (send packets to each other) using sockets.
+
+This program listens to two udp ports and transmits the packets to a given udp port and address. Consequently, it has to be simultaneously an UDP server and an UDP client. You may consider the possibility of using different threads for the droppers and the scheduler.
+
+The scheduler strictly prioritizes queue $H$.
+That is, it starts to serve queue $L$ only if there are no packets at queue $H$.
+Nevertheless, this is non-preemptive priority, which means that the server will not interrupt a service to queue $L$ when a packet arrives to queue $H$.
+The server will complete the service to the packet of queue $L$ and only then it will serve the packet that has arrived to queue $H$.
+
+All port numbers and the destination should be configurable as parameters. An additional parameter will configure the queue size (number of packets). If the queue size is set to zero, it means infinite queue length. If a finite queue is used, a taildrop policy will be applied.
+
+The scheduler will draw service times from an exponential distribution.
+
+Combine the priority queues with two traffic sources that generate different classes of traffic and obtain statistics of the delay for each of the traffic classes.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\linewidth]{figures/scenario3.eps}
+\caption{Scenario to test in lab assignment 3.}
+\label{fig:scenario}
+\end{figure}
+
+
