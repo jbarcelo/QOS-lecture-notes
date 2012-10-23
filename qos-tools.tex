@@ -1,0 +1,26 @@
+\chapter{QoS Tools}
+\section{Why QoS tools?}
+In the last chapter we revised different applications with heterogeneous QoS requirements.
+If all these applications coexist in the same network, it is necessary to make sure that they all see their requirements fulfilled.
+
+One possible alternative is bandwidth overprovisioning.
+If there is more than enough bandwidth, the queues are always empty and the packets suffer minimum delay and packet loss.
+
+One of the problems of overprovisioning is that sometimes bandwidth can be very expensive.
+One of the challenges of the newtwork engineers is to satisfy the QoS requirements at a reasonable cost.
+
+Another problem of overprovisioning is the elastic demand.
+Imagine that you overprovision a network to make sure that the queues are empty and the VoIP packets suffer no queueing delays.
+Some users will notice that the network is blazing fast.
+``Hey, I can download a HD movie in no time, I will download many of them so I can choose which one I want to watch.''
+It is normal that users respond to bandwidth availability by consuming extra bandwidth.
+
+Finally, and very similar to the previous case, there are network security threats such as worms that will consume as much bandwidth as it is available to propagate.
+Sometimes a defective or misconfigured device will also consume as much bandwidth as it is available.
+
+For all these reasons, overprovisioning cannot be the answer to everything.
+An alternative to overprovisioning is to use QoS tools to manage the available bandwidth in such a way the different QoS requirements can be met by prioritizing one traffic over the others and shaping the traffic flows.
+
+Using the road analogy, if we have an ambulances with strict delay constraints we can make the roads wider or use 
+
+
