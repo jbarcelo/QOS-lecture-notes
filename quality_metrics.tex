@@ -212,3 +212,31 @@ The advantage is that they can often be delayed and accommodated in off-peak hou
 \subsection{Gaming}
 Real time online gaming requires short delays.
 Normally the volume of data exchanged is low.
+
+\section{Service Level Agreements}
+
+A company owning different networks at different locations normally pays an Internet Service Provider (ISP) for connectivity among those networks.
+The ISP offers different services that are labelled with marketing names such as gold, silver and bronze.
+Each service has different characteristics in terms of QoS metrics.
+
+The company has to take the decision to take one or more of those services according to the applications that are needed.
+Typically, for VoIP applications, the highest QoS (gold) is needed.
+Other applications such as nightly backup may use other services that allow to transfer high volumes of data at low rates (bronze).
+
+Besides the QoS commitments, it is common to include in the contract a Committed Information Rate (CIR) and Peak Information Rate (PIR).
+The ISP provides QoS guarantees for the traffic which is below the CIR, and allows rates up to the PIR with no QoS guarantees.
+As an example, traffic over the CIR and below the PIR may be discarded in case of congestion.
+
+To be more specific, the agreement includes not only a rate, but also a depth of a token bucket, which is a measure of the burstiness of the traffic. 
+Token buckets will be covered in more detail in the next chapter.
+
+\subsection{95\% percentile billing}
+
+An alternative of the CIR/PIR approach is the 95\% percentile billing.
+The client commits to a given data rate.
+Then, the actual traffic is measured in averages of 5 minutes.
+The measure that is using for billing is the one that occupies the 95\% percentile.
+That means that 95\% of the measures are lower that this value and only the 5\% are higher (peaks).
+
+If the measured 95\% percentile is higher than the committed rate, the client has to pay a penalty that is specified in the SLA.
+For example, 10 Euro for each Gbps in excess of the committed rate.
