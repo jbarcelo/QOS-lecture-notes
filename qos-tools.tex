@@ -26,6 +26,22 @@ Using the road analogy, if we have an ambulances with strict delay constraints, 
 A QoS solution classifies the traffic into different classes accordingly to SLA requirements and treats each of these classes differently across the network.
 Each of these classes is a ``class of service'' (CoS).
 
+\subsection{Backup and maintenance}
+
+Private users normally have Internet access with no QoS guarantees.
+They pay for a 20 Mbps ADSL line, but how much they can get out of it is unknown.
+
+Business users often choose a service with QoS guarantees, which is much more expensive than the one that has no guarantees.
+Furthermore, for increased reliability, it is normal that business pay for a second line for backup purposes.
+As paying for two high-speed lines would be too expensive, a more economic option is to choose a slow connection for backup.
+
+If the main (expensive) line is out of service (either due to failure or programmed maintenance), the backup line has to support all the traffic.
+At this point it is important to prioritize critical business applications at the expense of others that can be delayed to another time or another day.
+
+As an example, if web browsing is not a critical business application but access to a remote database is, the users might not be able to browse the web until the main line has been restored.
+However, this fact will not seriously impact the ability of doing business as usual.
+
+
 \section{QoS at different layers}
 Our interest is on the provision of end-to-end QoS.
 The layer that provides end-to-end (internetworking) connectivity is the layer 3.
@@ -162,4 +178,63 @@ Yellow packets will be marked for drop precedence.
 And green packets will be forwarded unmarked.
 In case of congestion, yellow packet will also be dropped.
 
+If the yellow packet that has been marked for drop precedence continues its trip towards its destination, it may be the victim of active queue management (AQM) tools at some later point.
 
+\subsection{Policers}
+
+Policers combine a meter and a dropper.
+The meter is a classifier that has been explained before, and the dropper simply drops packets.
+Policers play a role in enforcing CIR/PIR agreements and also in guaranteeing bounded delay for packets traversing the network, and a fair bandwidth distribution.
+
+If an SLA defines a PIR and the customer sends traffic over that peer, the ISP will police that traffic.
+A reasonable customer might police the traffic himself, to select which are the less important packets and avoid that the ISP drops packets.
+Another alternative is that the customers shapes its traffic.
+We will cover shapers in a later subsection.
+
+Policers can also be used before queues.
+By controlling the input rate of a queue (or a set of queues) it is possible to provide delay and bandwidth guarantees to each queue.
+
+As an example, if a queue for VoIP packets is serviced at a rate of 100 Mbps and the input is policed at a rate or 1 Mbps, with a bucket size of 100 Kbits, the  delay is bounded to $\frac{10^5 bits}{10^8 bps} = 10^{-3}s$.
+Note that the delay guarantee is derived from the bucket size and not from the rate.
+
+The rate limit is important when the voice queue is prioritized over other queues.
+If the priority queue is not policed, it can starve other queues in case of misbehaviour.
+
+Note that policers introduce packet drop but don't introduce delay.
+There is a token bucket that stores tokens, but not packets.
+The next subsection introduces traffic shapers that can prevent packet loss at the expense of delay.
+
+\subsection{Shapers}
+
+We have seen that policers drop traffic that does not conform to a given traffic profile.
+An alternative of dropping is buffering.
+When a shaper receives a packet and there is not enough tokens in the bucket to serve it, it will store it in a queue.
+As soon as there are enough token in the bucket to serve the first packet of the queue, the shaper will allow the first packet of the queue and decrement the number of tokens in the bucket accordingly.
+
+As the buffer size is finite, it is possible that the buffer fills up and the shaper loses packets.
+
+Shapers are normally not appropriate for VoIP, as they introduce delay.
+However the can be used to set the pace of TCP flows effectively and for this reason it is said that they are TCP friendly.
+
+By holding packets in the buffer, the shaper increases the RTT delay.
+The result is that the TCP rate is slowed down.
+In the event that the buffer fills and a packet is lost, TCP halves its transmitting rate.
+However, as the buffer is full, the shaper keeps transmitting at a full rate for some time and gives time to TCP to build up the congestion window and increase the transmitting rate again.
+
+An alternative implementation of the shaper is to use a leaky bucket instead of a token bucket.
+The leaky bucket simply stores packets and ``leaks'' them at a given rate.
+Therefore, the leaky bucket does not allow any kind of traffic burstiness.
+
+\subsection{Queues, droppers and schedulers}
+
+This is a critical component of QoS.
+Packets are stored in one or more FIFO queues and there is a scheduler that ``serves'' the queues by taking the first packet of a queue.
+Another element of the system is the dropper, that drops packets.
+
+There are several alternatives for the implementation of the scheduler and the dropper and we will discuss them in the next chapter.
+
+We want to mention here that the queues do not usually contain the packets as it is much more effective to store pointers to the packets.
+
+\subsection{The TX-ring and the interleaver}
+The last element of the tools in router, just before the transmission line, is the transmission ring (TX-ring).
+The normal configuration is having a queue system and the scheduler taking packets from the queues and placing them in the TX-Ring.
