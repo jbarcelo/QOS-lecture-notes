@@ -91,3 +91,75 @@ An example is given in Fig. \ref{fig:qos-chain} which shows a QoS tools chain fo
 \label{fig:qos-chain}
 \end{figure}
 
+\subsection{Classifiers}
+
+To apply QoS, it is required to discriminate among different classes of traffic.
+Therefore, the first step in any QoS tool chain is always classification.
+This classification is performed by a tool that we call classifier.
+
+These are some of the classification criteria that can be applied by a classifier:
+\begin{itemize}
+\item Incoming interface: Packets can be classified using the interface (either physical or virtual) that they are coming from.
+As an example, we can have all the IP phones in our network in the same VLAN, and then classify the packets of this VLAN as expedited forwarding (EF).
+
+\item Metering: We can take a classifying decision based on traffic volume.
+This is typically done with token buckets (e.g. RFC 2698 \cite{rfc2698}).
+Traffic conforming to a token bucket of a given rate and burst size receives a different classification than non-conforming traffic.
+It is also possible to classify the traffic in three different colors (green/yellow/red) according to the CIR/PIR criteria.
+
+\item QoS fields: We have mentioned that IP, Ethernet and MPLS packets all have a field for QoS.
+The bits (the marks) in these fields can be used for classification purposes.
+
+\item Other headers: The other headers of the packets can also be used for classification purposes.
+For example, if we have a server devoted to VoIP services, we can prioritize all the packets destined to (or originated from) that server.
+
+\item Deep packet inspection: This involves opening the packet and looking into its contents to take a decision.
+It can be useful to detect signatures of virus, and identify higher layers protocols.
+In the field of QoS, it is used for example to classify P2P traffic (bittorrent, kazaa).
+
+DPI is also used for security, surveillance, espionage and censorship purposes.
+
+\item Stateful inspection (SI): In stateful inspection we use not only information in the packet, but also information of previous packets.
+As an example, it can be used to identify encrypted P2P traffic by identifying patterns such as communications with many other devices taking both the role of client and server.
+\end{itemize}
+
+DPI and SI are computationally expensive.
+It would be desired to perform them only once, rather than repeating the effort in every router.
+The problem is that all the classification effort is lost after the packet leaves the router, unless the QoS headers are explicitly changed.
+In the next subsection we introduce the marker, which is the tool that changes QoS markings.
+
+\subsection{Markers}
+
+Classifying can be computationally expensive.
+Additionally, some classifications can be done only at the entry point of the network.
+As an example, imagine a classification based on a metering tool for the traffic of a given client.
+It is feasible to use the metering tool and the classifier in the interface that the client uses to connect to the network.
+However, after that traffic has been aggregated with traffic of other customers, it might not be possible isolate it with the purpose of metering.
+In core routers with the larger line-speeds, only very simple (hardware based) classifications are possible.
+
+For all these reasons, it is necessary that the routers can pass some information to each other regarding classification.
+The tool for this is the marker, that changes the bits of the QoS headers of the packets.
+
+\subsubsection{Where to classify and mark?}
+
+Classification is done in the entry point of the network, which is also called the trust boundary.
+If a network wants to identify P2P traffic to throttle it down, it will do it at the edge routers, which are the first routers that have the opportunity to inspect the packets.
+Then, the QoS field of the packet headers will be marked so that other routers of the network don't have to repeat the expensive classification process.
+The classification done by the other routers will be straightforward as all they have to do is to check the QoS field.
+
+The volumes of traffic in edge routers are smaller than in core routers.
+Edge routers have the necessary time to classify and mark the packets.
+Edge routers also can easily differentiate traffic of different customers for metering purposes.
+
+This initial marking may also be accompanied by policing.
+A common example is to classify the traffic coming from a customer into three colors in the edge router.
+Green packets are the ones conforming the CIR.
+Yellow packets are the ones conforming the PIR.
+And Red packets are the ones exceeding the PIR.
+
+Red packets will be dropped (policed).
+Yellow packets will be marked for drop precedence.
+And green packets will be forwarded unmarked.
+In case of congestion, yellow packet will also be dropped.
+
+
