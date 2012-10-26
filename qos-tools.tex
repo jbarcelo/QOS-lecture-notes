@@ -43,6 +43,32 @@ IP packets have a byte for QoS.
 Six of the bits are there to indicate the class of service, which is called ``differentiated services code point''.
 The other two bits are for ``explicit congestion notification'' (ECN).
 
+\section{IP flow, IP class}
+
+IP packets can be grouped in flows.
+As an example when you are browsing a webpage and send multiple HTTP request packets, all those packets belong to the same flow.
+The headers of the packets of the same flow have three fields in common:
+
+\begin{itemize}
+\item The layer four protocol (either TCP or UDP)
+\item The source and destination IP address
+\item The source and destination port.
+\end{itemize}
+
+It is important that all the packets of a flow follow the same path and are stored in the same queues, to prevent packet re-ordering.
+
+The number of IP flows traversing a network is humongous and therefore it is not possible to apply QoS on a per-flow basis.
+The alternative is to group several flows with similar QoS requirements on the same ``Class of Service''.
+
+As an example, all web traffic flows could be mapped to the same CoS.
+Also flows from other application with similar requirements (IRC, email) could be included in the same CoS.
+
+The millions of flows traversing a router are assigned to reasonable number of traffic classes, such as four or eight.
+Then, the router treats each of these classes differently in what is known as the per-hop-behaviour PHB.
+
+Having a reduced number of classes makes the implementation and configuration of router much more easier.
+It makes it even possible to use automatic tools to configure and re-configure the routers of a network.
+
 \section{QoS tools inside a router}
 
 To achieve QoS end-to-end, it is necessary to provide QoS in all of the intermediate hops.
