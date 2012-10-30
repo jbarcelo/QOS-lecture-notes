@@ -238,3 +238,26 @@ We want to mention here that the queues do not usually contain the packets as it
 \subsection{The TX-ring and the interleaver}
 The last element of the tools in router, just before the transmission line, is the transmission ring (TX-ring).
 The normal configuration is having a queue system and the scheduler taking packets from the queues and placing them in the TX-Ring.
+Differently from the queues, the TX-ring does not contain a pointer to the packet.
+It contains the actual packets, ready to be transmitted.
+The goal of the Tx-ring is to feed the transmission line, to make sure that it is continuously transmitting if there are packets to be serviced.
+The Tx-ring is normally dimensioned in such a way that there is at least the packet that is currently under transmission and one additional packet that will follow.
+
+The TX-ring is completely FIFO and there is no possibility to apply prioritization over the packets when they reach it.
+This is not a problem in high-speed transmission lines, when transmitting a packet takes less than a millisecond.
+However, in low-speed lines, the packets stored in the TX-ring can substantially delay a high priority packet.
+
+Consider the following example.
+A router transmits two kinds of traffic: VoIP and backup data.
+VoIP are short (100 bytes, 800 bits) and have strict priority over backup packets, which are long (1500 bytes, 12,000 bits).
+At a given point of time, the VoIP queue is empty and therefore the schedule serves packets of the low priority queue.
+The low priority queue may have a large number of packets (let's say 10) but the scheduler makes sure that there are not more than two packet in the Tx-ring.
+We have a situation in which we have two long packets in the Tx-ring and a VoIP packet arrives to the high priority queue.
+The VoIP packet has priority and therefore it will be the first one to be served by the scheduler.
+Still, it will have to wait for the two long packets in the Tx-ring which have already been served by the scheduler.
+
+Transmitting two 12,000 bits packets over a 1Mbit line takes around 24 ms, which is a substantial delay for VoIP packet.
+To prevent this problem, an interleaver can be used in low speed link.
+The idea is that long packets are divided in smaller chunks.
+Then, the scheduler serves "chunks" of a packet, instead of the whole packet.
+This approach reduces the delay and jitter for high priority traffic.

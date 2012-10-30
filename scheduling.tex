@@ -1,0 +1,41 @@
+\chapter{Scheduling}
+
+Scheduling is a key tool in QoS and it is complex enough to deserve its own chapter.
+A scheduler serves two or more queues and has to take decissions about which queue has to be served first.
+The combination of queues and scheduler can change the order of the packets.
+For this reason it is important that all packets of a same flow are mapped to the same queue, to prevent packet re-ordering.
+
+\section{Strict Priority Queues}
+
+Prioritizing is a core idea in QoS.
+Imagine that a big packet belonging to backup tool such as Dropbox arrives to a router.
+Right after that, a secon packet arrives to the same roter.
+Imagine that this second packet is a small VoIP packet.
+
+The VoIP packet is in a hurry, because it must make it to the decoder before the playout time.
+For this reason, the combination of queues and scheduler will allow the VoIP packet to advance the backup packet and be transmitted in the first place.
+
+In the simplest case we have only two queues: the high priority queue and low priority queue.
+A classifier maps each of the packets to one of the queues.
+The scheduler will serve the high priority whenever there is a packet in that queue.
+Only when the high priory queue is empty, the scheduler will serve the low priority queue.
+
+Note that this concept can be easily generalized to the case in which there are more than two queues.
+The principle is that a queue will be served only when all the higher priority queues are empty.
+
+\subsection{Preemptive strict priority}
+In preemptive strict priority, if a high priority packet arrives while a low priority packet is being served, the service of the low priority queue is interrupted and the high priority packet is served immediately.
+Theoreticall, the service of the low priority packet is resumed when the high priority queue becomes empty.
+
+This approach is very benefitial for low priority packets as they are never disturbed by low priority packets.
+The only problem with this approach is that, in practice, it is not trivial to stop a transmission of a packet and later resume it.
+
+\subsection{Non-preemptive stric priority}
+In non-preemptive strict priority, if a high priority packet arrives while a low priority packet is being served, the transmission is not interrupted.
+The high priority packet will wait for the transmission of the low priority packet to finish and then it will be transmitted.
+
+This is the approach that is used in practice in high speed transmission lines.
+The problem with this solution is that, in a slow transmission line, a high priority packet might need to wait for a long time if it arrives while a long low priority packet starts being serviced.
+
+\subsection{Fragmenting and interleaving}
+A 
