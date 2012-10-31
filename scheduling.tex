@@ -74,4 +74,48 @@ The actual bandwidth allocated to each queue depends on the schedule, but also o
 Recovering our example of three queues, if the packets in Q3 are 12000 bits long and the packets of Q1 are 200 bits long, Q3 will receive twice as much bandwidth as Q1.
 If we want to allocate a fraction of the available bandwidth to each of the queues and we don't know the length of the packets in advance, it will be impossible to use WRR.
 
+\section{General Processor Sharing}
+
+General Processor Sharing is an idealized sharing approach that assumes a fluid model.
+It assumes that the scheduler can serve an infinitesimal amount from each of the queues.
+It is easy to imagine with the example of liquid reservoirs instead of queues, and pipes draining liquid from each of the reservoirs.
+One pipe may be draining one liter per hour and the other two liter per hours.
+Still, at any given point of time, both reservoirs are drained simultaneously, even though one is served twice as fast as the other.
+
+In the practice of packet networks, it is not possible to implement this idealized model.
+An approximative implementation is used and we explain it in the next section.
+
+\section{Deficit Weighted Round Robin}
+
+In deficit Weighted Round Robin (DWRR) each queue has an associated ``token bucket''.
+It is called the ``deficit counter'', and it is measured in bytes.
+The scheduler visits all the queues, one by one.
+In every visit, the scheduler increases the deficit counter by a value which is called ``quantum''.
+If the value of the deficit counter after being increased is larger than the size of the first packet in the queue, the packet is served.
+The deficit counter is decreased by a value equal to the size of the packet that has been served.
+If, after being decremented, the deficit counter is larger than the size of the following packet, another packet is served and the deficit counter is decremented accordingly.
+This process is repeated until the deficit counter is smaller than the first packet of the queue or the queue is empty.
+In the former case, the value of the deficit counter is saved for the next round.
+In the latter case, the value of the deficit counter is reset.
+At this point, the scheduler moves on to serve the next queue.
+
+By adjusting the quantum of each queue, we can set the weight (in terms of bandwidth) of each of the queues.
+As an example, if we set a quantum of 400 bytes for the high priority queue and a quantum of 200 bytes for the low priority queue, the high priority queue will receive twice as much bandwidth.
+
+Let's look at an example.
+The high priority queue contains a 500 bytes packet, and the low priority queue a 400 bytes packet.
+Both deficit counters are zero.
+In the first round, the deficit counters are incremented to 400 and 200, and no packet is served as the values of the counters are lower than the size of the packets.
+In the second round, the counter of the high priority queue is incremented to 800.
+The first packet is serviced and de counter is decremented to 300.
+While the first packet is being serviced, a 100 bytes packet and a 500 bytes packet arrive at the high priority queue.
+When the service of the first packet finishes, the deficit counter of the first queue (300 bytes) is larger than the size of the head-of-queue packet (100 bytes).
+Consequently, the head-of-queue packet is served and the deficit counter is decremented to 200.
+At this point, the counter is smaller than the size of the head-of-queue packet and therefore the scheduler jumps to the next queue.
+
+It increases the counter of the second queue by 200, and the resultant value (400) is equal to the size of the head-of-queue packet of the second queue.
+This packet is being served and the counter decremented.
+
+The scheduler moves to the first queue again, it increases the counter by the quantum (400) to 600.
+Then it serves the head-of-queue packet, which has 500 bytes, and decrements the deficit counter by 500.
 
