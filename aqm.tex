@@ -74,6 +74,36 @@ Delays of several seconds have been reported due to bufferbloat.
 
 It is important to realize that large buffers may have the effect of penalizing the network performance.
 
+\section{Taildrop and Weighted Taildrop}
+
+In the good old times, high speed memory was expensive and therefore the amount of it in routers and other switching devices was limited.
+Consequently, the queues were not very large because there was no room to store a lot of data in the router.
+As memory got cheaper, manufacturers beefed up their devices with more memory.
+This turned out not to be an improvement on the network performance, as larger buffers resulted in ``bufferbloat''.
+
+It is obvious that it is good to have maximum size of the queue and drop packets that arrive to a full queue.
+This approach is called taildrop, as packets are dropped from the tail of the queue.
+
+The size of the queue can be measured in packets, in bytes or in milliseconds.
+To make the measure in time, we need to take into account the speed of the interface.
+This is normally a good idea, as the amount of data that needs to be buffered is closely related to the speed  of the line.
+Expressing the queue length in time also gives a direct idea of the delay that can introduce de queue.
+
+As an example, a 10 ms queue size seems to be a fair size for many applications.
+A 10 seconds queue is probably excessive for many applications, such as web browsing.
+
+In the simplest approach, all the packets arriving to a taildrop queue are subject to the same restrictions.
+If the queue is full, the packet is discarded.
+Otherwise, it is accepted.
+
+It is possible to refine this approach taking into consideration QoS differentiation.
+Imagine that in a previous stage we have marked packets as being either in-contract or out-of-contract.
+Then we can set two different queue sizes for different packets.
+We can accept in-contract packets if the queue size is below 10 ms and out-of-contract packets if the queue size is below 5 ms.
+In this case, out-of-contact traffic has a higher dropping precedence that in-contract traffic, and we lessen the extent to which in-contract traffic can be delayed (or even dropped) due to out-of-contract traffic.
+
+The technique that uses different queue sizes for different packets is called weighted tail drop.
+
 \section{TCP global synchronization}
 
 Another event that penalizes network performance is TCP global synchronization.
@@ -96,6 +126,12 @@ Active queue management (AQM) addresses tries to address these problems.
 \section{Random Early Detection}
 
 A first approach to prevent that queues fill up and the bufferbloat and TCP global synchronization problems appear, is to start discarding packets before the queue is full.
+The general idea is to accept all packets when the queue is empty (or almost empty), some packets as the queue starts to fill up, and all packets when the queue is full (which should not happen).
+Packet loss is induced deliberately before the queue is full to signal the involved TCP flows that they should reduce the sending rate.
+The big difference is that not all the flows receive this signal simultaneously.
+With RED, the packet drop is distributed evenly in time, so that the TCP halve their transmission rates at different instants and therefore the aggregated sending rate evolves smoothly in time.
+
+By avoiding the sharp drop of the aggregated sending rate in TCP global synchronization, it is possible to achieve a better utilization of the available bandwidth\footnote{Cisco provides a figure supporting this statement in http://www.cisco.com/image/gif/paws/10582/60c.gif}.
 
 
 
