@@ -134,4 +134,25 @@ With RED, the packet drop is distributed evenly in time, so that the TCP halve t
 By avoiding the sharp drop of the aggregated sending rate in TCP global synchronization, it is possible to achieve a better utilization of the available bandwidth\footnote{Cisco provides a figure supporting this statement in http://www.cisco.com/image/gif/paws/10582/60c.gif}.
 
 
+The first step to implement RED in a router is to compute the average delay\footnote{Note that recent papers point out that average queue delay is not a relevant metric to differentiate between good queues and bad queues \cite{nichols2012cqd}.}.
+This is computed using an exponential weighted moving average with parameter $w$.
+The current average $q_{avg}$ is computed using the previous average value $q_{prvavg}$, the last measured value $q_{measured}$ and the parameter $w$ as follows.
+\begin{equation}
+q_{avg} = \frac{2^w-1}{2^w}q_{prvavg} + \frac{1}{2^w}q_{measured}
+\end{equation}
 
+If $q_{avg}$ is below a minimum threshold ($q_{min}$) the packet is always accepted.
+If $q_{avg}$ is larger than the maximum queue length $q_{max}$, the packet is rejected.
+In the case that $q_{min} \leq q_{avg} \leq q_{max}$, the packet is accepted with probability
+\begin{equation}
+P[packet accepted] = \frac{q_{avg}-q_{min}}{q_{max}-q_{min}}P_{max},
+\end{equation}
+
+where $P_max$ is yet another configuration parameter that determines the dropping probability when $q_{avg}$ approaches $q_{max}$ from the left.
+
+It is straightforward to generalize RED to weighted RED in which different packets use different profiles (different configuration parameters) in order to prioritize some packets over the others.
+Typically, packets with higher dropping precedence are exposed to more aggressive RED profiles.
+
+\section{Early Congestion Notification}
+
+It is sad to drop packets when they are half-way towards their destination, but in principle it is the only mechanism to signal TCP that it has to reduce its sending rate.
