@@ -1,0 +1,54 @@
+\chapter{Active Queue Management}
+
+In Chapter \ref{} we mentioned that some of the Internet applications are elastic in the sense that they make use of all the available bandwidth.
+The interesting part is that these application don't know in advance how much bandwidht is available, which means that they have to find it out somehow.
+In this chapter we describe how TCP congestion control and Active Queue Management (AQM) work together to throttle bandwidth hungry applications.
+
+The interplay between TCP and AQM is critical to deliver satisfactory performance.
+In 2009, mainstream media\footnote{E.g. www.nytimes.com/2009/09/03/technology/companies/03att.html} reported performance problems in AT\&T's wireless data network.
+The alleged cause was the increase of data usage due to the popularity of IPhones.
+The underlying reason seamed to be a poor buffer dimensioning\footnote{http://blogs.broughturner.com/2009/10/is-att-wireless-data-congestion-selfinflicted.html}.
+
+\section{TCP congestion control}
+We will introduce the working principles of TCP.
+This is not meant to be an accurate description of TCP, just an overview of the concepts used for congestion control.
+TCP is indeed very complex, heterogeneous (different in different OS) and continuously evolving.
+An accurate description of TCP is beyond the scope of this course.
+
+TCP is a flow-oriented transport (layer 4) protocol that is used by the elastic applications in Internet.
+This includes most of the applications, such as web browsing, email and file transfer.
+Take the example of a large file transfer using FTP, which involves the transmission of a large amount of data.
+TCP doesn't know how much bandwidth is available, so it will start transmitting one packet.
+If this packet is successful, it will transmit two packets.
+These two packets represent, the amount of unacknowledged data on-the-fly and this limit is called the congestion window.
+And if these to packets are positively acknowledged, TCP will duplicate its congestion window one more time and send four packets.
+This process is called the slow start phase of TCP.
+Even though it starts slow, the true is that it is growing exponentially and, at some point, the transmitting rate will exceed the available capacity and a packet will be dropped.
+
+When TCP detects that a single packet has been dropped (signaled by a duplicate ack), it halves its congestion window and starts increasing it linearly at a rate of one MTU for RTT.
+This phase is called congestion avoidance, as TCP slowly grows its congestion window trying to find the limits of the available capacity.
+If another packet loss occurs which results in another duplicate ack, the congestion window is halved again.
+The result is that the sending rate of TCP approaches the available capacity.
+
+If the loss of a packet is detected due to a timer timeout, TCP assumes that something is very wrong with the network and moves back to the initial slow start behaviour.
+
+In summary, TCP will always try to increase its sending rate.
+Only when a packet is lost, TCP will reduce its sending rate as the packet loss is interpreted as a sign of congestion.
+Therefore, in principle, it is necessary to drop packets to signal TCP to lower its sending rate.
+
+\section{Long Fat Tails}
+
+As the bandwidth of the Internet lines increase, TCP needs to keep up with this progress and be able to fill this pipes.
+If you have a high-speed connection (say 1 Gps) and a long end-to-end delay (100ms), you need a lot of data to fill it.
+In this particular example, 100 Mbits of data are needed to fill the pipe.
+
+If TCP does not fill the pipe, and pushes only 1 Mbit of data in it, then it is wasting 99\% of the available bandwidth.
+For this reason, modern operative systems use techniques (basically, window scaling) that make it possible to push much more data into the pipe than the original TCP, which allowed only for 64 Kbytes.
+
+
+\section{Bufferbloat}
+
+It can be tempting to dimension a buffer so that there is no packet loss.
+However, increasing the buffer size can increase the delay to unacceptable limits.
+This problem seems to be prevalent in today's Interned, and has been termed ``bufferbloat''.
+
