@@ -153,6 +153,23 @@ where $P_max$ is yet another configuration parameter that determines the droppin
 It is straightforward to generalize RED to weighted RED in which different packets use different profiles (different configuration parameters) in order to prioritize some packets over the others.
 Typically, packets with higher dropping precedence are exposed to more aggressive RED profiles.
 
-\section{Early Congestion Notification}
+\section{Explicit Congestion Notification}
 
 It is sad to drop packets when they are half-way towards their destination, but in principle it is the only mechanism to signal TCP that it has to reduce its sending rate.
+There is an alternative, introduced in  RFC 3168 \cite{rfc3168} which allows notifying TCP without dropping packets.
+
+First it is necessary that both communication endpoints can support ECN and agree to use it.
+If they do, they will the least two significant bits of the DiffServ field to indicate it.
+These bits will be set to either 10 or 01 if ECN is being used, and 00 otherwise.
+
+If a that supports ECN decides to drop a packet, it will first check whether the packet belongs to a flow that supports ECN.
+If it does, it will set the ECN bits of the packet to 11 and will not drop the packet.
+The receiving host will use some flags on the TCP headers to signal the originating host that the network is congested.
+
+Upon reception of this signal, the originating host will reduce its congestion window (and thus its transmitting rate) just as if a packet dropped has occurred.
+The advantage is that there is no need for packet re-transmission.
+This way, it is possible to achieve congestion control without packet dropping.
+
+\section{CoDel}
+The latest trend in AQM is Controlled Delay (or CoDel) \cite{nichols2012cqd}, which discards packets when the minimum queue occupation exceeds a threshold (in time).
+This technique seem to be easier to configure and provide better link utilization while preventing bufferbloat.
