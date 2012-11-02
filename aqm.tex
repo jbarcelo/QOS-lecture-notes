@@ -52,3 +52,50 @@ It can be tempting to dimension a buffer so that there is no packet loss.
 However, increasing the buffer size can increase the delay to unacceptable limits.
 This problem seems to be prevalent in today's Interned, and has been termed ``bufferbloat''.
 
+\subsection{Good Queues and Bad Queues}
+Queues play a critical role in data packet networks.
+They absorb a temporal burst and smooth it out for transmission over a line.
+The burst can be caused by bursty sources and also by statistical multiplexing.
+A good queue absorbs the burst, fills it up, and then empties completely.
+
+But there are also bad queues.
+Bad queues are full for a long time.
+Note that a queue that is full for a long time is not useful for absorbing bursts (as it is full and cannot absorb anything) and it has the negative effect of increasing delay.
+Bad queues appear frequently when there is a high-speed to low-speed transition.
+
+A good example is a 1 Gbps home network that connects to an ADSL which can upload 2Mbps.
+If you start to upload a large file to the Internet, TCP will do its best in ``filling the pipe'', and the effect of that action would be to fill the buffer of the ADSL router.
+If that router has a large buffer, it will introduce a lot of delay.
+TCP will believe that it is dealing with a ``long pipe'', as the delay is long, and will persist in the efforts of filling it.
+
+The result is an artificially bloated delay, which not originated by the long distance, but by the large full buffers.
+A large full buffer does not provide any benefit to the network, other than unnecessarily increasing the delay.
+Delays of several seconds have been reported due to bufferbloat.
+
+It is important to realize that large buffers may have the effect of penalizing the network performance.
+
+\section{TCP global synchronization}
+
+Another event that penalizes network performance is TCP global synchronization.
+It occurs when a tail-drop queue accommodates packets of several TCP sessions.
+The TCP sessions keep increasing their congestion windows and transmission speed until the queue fills up.
+At this point, the tail-drop queue drops all the arriving packets.
+
+All the TCP sessions detect packet loss and halve their sending rate simultaneously.
+As a result, the queue empties and then the link remains unused for some time.
+Then the TCP sessions starts growing again, and the story repeats one more time.
+
+Observe that bufferbloat and TCP global synchronization are complementary problems.
+In the former, the queues are empty.
+In the latter, the queue is empty for a substantial fraction of time.
+Ideally we would like that there was always a packet ready to be transmitted, to take full advantage of the link capacity.
+Simultaneously, we would like that there was only a single packet, as the presence of many packet introduces unnecessary delay.
+
+Active queue management (AQM) addresses tries to address these problems.
+
+\section{Random Early Detection}
+
+A first approach to prevent that queues fill up and the bufferbloat and TCP global synchronization problems appear, is to start discarding packets before the queue is full.
+
+
+
