@@ -1,0 +1,56 @@
+\chapter{Differentiated Services}
+
+The IETF has proposed two main solutions for the Internet QoS architecture: Integrated Services and Differentiated Services \cite{rfc2475}.
+The first one implies per flow signaling and reservation, and therefore it does not scale well in large network.
+The focus of this chapter is on the second alternative.
+In differentiated services, traffic is classified in a reduced number of classes, typically less than eight.
+The routers implement different PHB for the different classes, which provides the desired QoS.
+
+Note that since in Diffserv there is not a per flow signal and admission control, in principle it does not guarantee that the QoS requirements are actually satisfied.
+In reality, this is achieved with a combination of traffic conditioning at the edge of the network and capacity planning.
+This is not an exact science, but we'll cover the basics through examples and typical configurations.
+
+\section{Key aspects of DiffServ}
+DiffServ is an scalable solution for QoS provisioning in IP networks.
+DiffServ offers the tools for network administrators to implement QoS in an IP domain.
+This can be used to offer VPN that satisfy SLAs and to support services with tight QoS requirements such as VoIP.
+
+The interconnection of different DiffServ domains is somewhat more complicated, as needs the collaboration of the different organizations that manage the different networks.
+DiffServ is not commonly used for generic Internet access, as the Internet involves a humongous collection of networks which makes the provision of QoS guarantees an enormous challenge.
+
+Three key aspects of DiffServ are border traffic conditioning, DiffServ markings, and PHBs.
+
+\subsection{Traffic Conditioning}
+
+Together with the SLA, a traffic conditioning agreement (TCA) is also established.
+The TCA is often defined as a packet marking combined with token bucket bucket, of a given rate and depth.
+For example, it may specify that packets with VoIP traffic will conform to a token bucket of rate 1Mbps and depth 1Kbps.
+
+At the edge of the network, the routers will perform classifying, metering and policing to ensure that the offered load complies with the specified TCA.
+The traffic exceeding the TCA may be either dropped or marked as non-conformant.
+
+As the tasks of classifying, metering and policing require computational resources, they are done only at the edge.
+At the edge of the network line speeds are lower than in the core of the network, and therefore it is possible for the router to process all the packets.
+In the core of the network, the switching speeds are much higher and the time required to process each packet should be minimized, and therefore there is no time for classification, metering and policing.
+As the edge of the network grows when the network grows, this solution is scalable and therefore appropriate for large networks with large volume of traffic.
+
+According to the initial classification, the edge router will mark the packets using a field in the IP header which is the DiffServ Code Point (DSCP).
+
+\subsection{DiffServ Code Point}
+
+The DiffServ is a 6 byte field in the IP header that is assigned to each packet in the edge of the network.
+The DSCP assigns a packet to one of the possible traffic classes supported by the network.
+There are some standardized values for this field, such as Expedited Forwarding (EF), that we will review later.
+But its value is of significance within the DiffServ domain and therefore the network administrator have the decision of which DSCP values are used and what is the meaning of each of them.
+This marking can be used later by the other routers of the network to quickly classify the packet, and treat the packet in accordance of the traffic class to which it belongs.
+This treatment is the per-hop-behaviour (PHB).
+
+\subsection{Per Hop Behaviour}
+
+For each of the traffic classes (DSCP values) supported by the network there has to be an associated PHB.
+This can be a many-to-one mapping, as different DSCP values can be offered the same PHB.
+The PHB is a high level description of the service that a packet will receive when it arrives to a router.
+It does not detail the QoS tools that will be used to implement that behaviour.
+
+\section{IETF defined per-hop-behaviour}
+
