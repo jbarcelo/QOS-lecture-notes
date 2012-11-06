@@ -74,3 +74,24 @@ The maximum delay obviously also influences the maximum jitter that the packets 
 Similar to EF, with the difference that Voice Admit (VA, \cite{rfc5865}) is subject to a call admission control procedure.
 
 \subsection{Assured Forwarding (AF)}
+
+Assured Forwarding is actually a group defined in \cite{rfc3260} that comprises 12 DSCPs.
+The packets belonging to this group will be forwarded is the offered rate is kept below the committed rate.
+It differentiates four different classes: AF1x, AF2x, AF3x and AF4x.
+AF1x is the lowest priority and AF4x is the higher priority.
+A typical implementation is to assign each of the classes to a queue and use DRR to distribute the bandwidth among the classes.
+
+Within each of the classes, there are three possible drop precedences.
+As an example, we have AF11, AF12 and AF13.
+This means that, if congestion occurs, AF12 packets will be dropped with higher probability than AF11 packets.
+And AF13 packet will be dropped with higher probability than AF11 and AF12 packets.
+
+A typical scenario is to use a two-rate meter within a class.
+If we take AF1x as an example, in-contract traffic is assigned to AF11, out-of-contract traffic is assigned to AF12, and traffic exceeding the PIR is simply dropped.
+
+AF11 and AF12 will be mapped to the same queue.
+This is an important aspect as otherwise packet re-ordering may occur.
+Then, different RED profiles will be applied to AF11 and AF12.
+AF12 will suffer a more aggressive RED profile to ensure that out-of-contract packets are the first to be dropped.
+
+
