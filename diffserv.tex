@@ -53,4 +53,24 @@ The PHB is a high level description of the service that a packet will receive wh
 It does not detail the QoS tools that will be used to implement that behaviour.
 
 \section{IETF defined per-hop-behaviour}
+The IETF has provided recommendations for four PHB.
+A recommendation combines a description of the PHB with a suggested DSCP.
 
+
+\subsection{Expedited Forwarding (EF)}
+Expedited Forwarding (EF) is defined in \cite{rfc3246} and uses the code point 101110BIN (46DEC).
+The purpose of this PHB is to serve real-time traffic such as VoIP or videoconferencing.
+It should provide guaranteed bandwidth with low delay, jitter, and packet loss.
+
+This can be attained by using strict priority queueing in combination with a buffer that is large enough to accommodate the traffic bursts.
+The traffic is policed to control its rate and burstiness.
+The rate needs to be controlled to ensure that this priority traffic does not starve other classes of traffic.
+The bucket depth needs to be smaller than the allocated queue space, to guarantee that no packet loss will occur due to full queues.
+The depth is also important as it determines the maximum delay that a packet may suffer, which is the token depth divided by the transmission rate.
+The maximum delay obviously also influences the maximum jitter that the packets will suffer.
+
+\subsection{Voice Admit (VA)}
+
+Similar to EF, with the difference that Voice Admit (VA, \cite{rfc5865}) is subject to a call admission control procedure.
+
+\subsection{Assured Forwarding (AF)}

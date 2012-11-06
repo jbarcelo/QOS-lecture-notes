@@ -1,7 +1,6 @@
 *.aux
 *.bbl
 *.blg
-*diff*
 *~
 *.ps
 *.dvi
