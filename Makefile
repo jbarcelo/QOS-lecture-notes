@@ -29,20 +29,20 @@ publish: ${MAIN}.pdf ${MAIN}_diff.pdf
 	s3cmd put --acl-public barcelo2012mdc.pdf s3://www.jaumebarcelo.info/papers/
 	s3cmd put --acl-public barcelo2012mdc_diff.pdf s3://www.jaumebarcelo.info/papers/
 
-%.bbl: my_bib.bib
-	latex $*
+${MAIN}.bbl : my_bib.bib ${MAIN}.tex
+	latex ${MAIN}
 	@while ( grep "Rerun to get cross-references"	\
-			$*.log > /dev/null ); do		\
+			${MAIN}.log > /dev/null ); do		\
 				echo '** Re-running LaTeX **';		\
-		latex $*;				\
+		latex ${MAIN};				\
 	done
-	bibtex $*
-	bibtex $*
-	latex $*
+	bibtex ${MAIN}
+	bibtex ${MAIN}
+	latex ${MAIN}
 	@while ( grep "Rerun to get cross-references"	\
-			$*.log > /dev/null ); do		\
+			${MAIN}.log > /dev/null ); do		\
 				echo '** Re-running LaTeX **';		\
-		latex $*;				\
+		latex ${MAIN};				\
 	done
 	
 
