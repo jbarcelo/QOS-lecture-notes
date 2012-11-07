@@ -56,6 +56,10 @@ It does not detail the QoS tools that will be used to implement that behaviour.
 The IETF has provided recommendations for four PHB.
 A recommendation combines a description of the PHB with a suggested DSCP.
 
+\subsection{Default PHB}
+
+It is a required behaviour and it is assigned the DSCP 000000BIN.
+RFC 4594 \cite{rfc4594} specify that there is typically some bandwidth guarantee for this kind of traffic, but the packets can be lost, reordered, duplicated or delayed at random.
 
 \subsection{Expedited Forwarding (EF)}
 Expedited Forwarding (EF) is defined in \cite{rfc3246} and uses the code point 101110BIN (46DEC).
@@ -94,4 +98,26 @@ This is an important aspect as otherwise packet re-ordering may occur.
 Then, different RED profiles will be applied to AF11 and AF12.
 AF12 will suffer a more aggressive RED profile to ensure that out-of-contract packets are the first to be dropped.
 
+\subsection{Class Selector (CS)}
+This was included to provide some kind of backward compatibility with pre-DiffServ approaches.
+The first three bits (0-2) to indicate precedence higher value means higher precedence.
+A practical use is to ease mapping from IP QoS markings to EXP QoS markings.
+
+
+\subsection{Differentiated Services in MPLS}
+In MPLS there are only three EXP bits for QoS markings.
+If the ``class selector'' PHB are used, which use only the first three bits of the six available in DSCP, it is very easy to map from DSCP to EXP and the other way around.
+All is needed is to copy those three bits when an IP packet enters the MPLS domain.
+
+If ``class selector'' is not used, but there are less than eight different classes, it is still possible to map from DSCP to EXP.
+This would be the case if AF11, AF12, AF21, AF22, AF31, AF32, AF41 and AF42 are used.
+The approach in which the information about the traffic class is contained in EXP bits is called EXP inferred PHB selection (E-LSP, where LSP stands for label switched path).
+
+If the classification used has more than eight different DSCP values, a first option is to opt for a many-to-one mapping.
+As an example if the eight classes mentioned above are used and in addition also EF is necessary, a possible option would be to treat AF1x packets just as AF2x packets.
+
+An alternative to the many-to-one mapping is to use the label for QoS.
+In our example, we could use five different labels.
+One for each of the AF1x groups and the fifth one for EF.
+When the LSP identifier carries QoS information it is called label inferred LSP (L-LSP).
 
