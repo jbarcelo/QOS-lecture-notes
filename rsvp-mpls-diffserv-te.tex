@@ -1,0 +1,30 @@
+\chapter{RSVP and MPLS-DiffServ-TE}
+
+In this chapter we will present an overview of a set of technologies that offer a tight control on QoS.
+This control comes at the price of complexity, but the ISPs and the manufacturers have decided that QoS is worth it.
+This technologies offer control on the path followed by the packets, bandwidth reservation (and therefore guarantees) and fast re-route capabilities.
+
+\section{Multi Protocol Label Switching (MPLS)}
+
+In the IP paradigm, the routers forward the packets based on the destination IP of the packet.
+MPLS offers a completely different alterative, in which the forwarding is not done using the destination address.
+Instead, labels are used at each hop to decide the outgoing interface.
+This approach is called ``virtual circuit packet network'' as it somehow emulates a circuit on a packet network, and it is opposed to the ``datagram'' IP paradigm.
+The virtual circuit approach has some advantages and disadvantages compared to the datagram approach.
+
+In the MPLS jargon, a virtual circuit is called a Label Switched Path (LSP).
+Each of the packets has a header which is called ``the label''.
+In fact, a packet may contain multiple labels and it is said that they are ``stackable''.
+The last label can be found on top.
+
+Upon reception of a packet, the outermost label it is inspected.
+Each router has a lookup table indicating, for every incoming label, the outcoming label and the outcoming interface.
+The rooter simply performs the lookup, pops the outermost label and pushes a new label before forwarding the packet.
+To populate the lookup table, the LSP is established before starting forwading packets.
+
+In MPLS, the routers are called Label Switch Routers (LSR) and the edge routers Label Edge Routers (LER).
+
+MPLS is protocol agnostic in the sense that can carry any kind of packets.
+Examples are IP packets and Ethernet packets.
+This functionality can be used to create both Layer-3 and Layer-2 virtual private networks.
+
