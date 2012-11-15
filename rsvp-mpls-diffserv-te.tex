@@ -23,8 +23,39 @@ The rooter simply performs the lookup, pops the outermost label and pushes a new
 To populate the lookup table, the LSP is established before starting forwading packets.
 
 In MPLS, the routers are called Label Switch Routers (LSR) and the edge routers Label Edge Routers (LER).
+The LSP is established between two LER and then all the packets in the LSP follow exactly the same path.
 
 MPLS is protocol agnostic in the sense that can carry any kind of packets.
 Examples are IP packets and Ethernet packets.
 This functionality can be used to create both Layer-3 and Layer-2 virtual private networks.
+MPLS simply stick a label on top of any packet (ethernet, IP, etc.)  in the LER which is the entry point of the MPLS domain.
+This MPLS packet is forwarded by MPLS by looking only to the label.
+The label is removed (popped) at the last or penultimate hop of the MPLS domain.
+
+One of the advantages of MPLS is that the same core can be used to transmit any kind of data.
+Another advantage is that it makes it possible to control the path that the packets follow.
+The engineering of the paths that the data flows follow within the data networks is called traffic engineering (TE).
+
+\section{Traffic Engineering}
+
+Consider the example scenario in Fig. \ref{fig:traffic-engineering}.
+All the links are of 100 Mbps and a propagation delay of 10 ms.
+Imagine that you have to carry two flows from router $A$ to router $D$.
+One of the flows is a 10 Mbps VoIP flow that requires low delay, jitter and loss.
+The second flow is a 90 Mbps flow for remote backup that does not have tight delay and jitter requirements.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\linewidth]{figures/traffic-engineering.eps}
+\caption{Example scenario to explain traffic engineering.}
+\label{fig:traffic-engineering}
+\end{figure}
+
+The best route between $A$ and $D$ is $A-E-D$.
+It has the same bandwidth, less hops, and less total delay than the alternative path $A-B-C-D$.
+
+A datagram-oriented network would choose the best route for all the packet.
+Notice that this might not be the best of ideas.
+If we direct a total of 100 Mbps (10 of VoIP + 90 of backup data) to 100 Mbps links, queues will build up, and delay, jitter and packet loss will be high.
+
 
