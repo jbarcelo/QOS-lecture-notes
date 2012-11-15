@@ -41,8 +41,8 @@ The engineering of the paths that the data flows follow within the data networks
 Consider the example scenario in Fig. \ref{fig:traffic-engineering}.
 All the links are of 100 Mbps and a propagation delay of 10 ms.
 Imagine that you have to carry two flows from router $A$ to router $D$.
-One of the flows is a 10 Mbps VoIP flow that requires low delay, jitter and loss.
-The second flow is a 90 Mbps flow for remote backup that does not have tight delay and jitter requirements.
+One of the flows is a 20 Mbps VoIP flow that requires low delay, jitter and loss.
+The second flow is a 80 Mbps flow for remote backup that does not have tight delay and jitter requirements.
 
 \begin{figure}[!h]
 \centering
@@ -56,6 +56,38 @@ It has the same bandwidth, less hops, and less total delay than the alternative 
 
 A datagram-oriented network would choose the best route for all the packet.
 Notice that this might not be the best of ideas.
-If we direct a total of 100 Mbps (10 of VoIP + 90 of backup data) to 100 Mbps links, queues will build up, and delay, jitter and packet loss will be high.
+If we direct a total of 100 Mbps (20 of VoIP + 80 of backup data) to 100 Mbps links, queues will build up, and delay, jitter and packet loss will be high.
+
+A better alternative is to direct the 20 Mbps of VoIP traffic to the short path $A-E-D$ and the 80 Mbps of backup traffic to the long link $A-B-C-D$.
+Using this solution, we make a better use of our network resources.
+All links are utilized, and they are all below 100\% utilization.
+This solution provides lower delay, jitter and packet loss for all classes of traffic, as the queues will not build up.
+
+This distribution of data flows in the network is called traffic engineering (TE).
+Two reason to engage in TE is to balance the load among different parts of the network to prevent that some links are overloaded while others are empty.
+TE is also useful to prevent that delay sensitive flows cross high-latency links (such as satellite links).
+Finally, if combined with bandwidth reservation, it can provide guarantees which are important to meet the SLAs that are common in virtual private network services.
+
+\section{Virtual Private Networks using MPLS}
+It is common that companies have different sites.
+Imagine that a company has a site in the city of Girona and another site in the city of Tarragona.
+This company wishes to have a single network shared among the two sites.
+The option of deploying a fiber to connect the two sites might be an overkill.
+Another option might be to approach an ISP and pay for a ``virtual connection'' between the two sites.
+
+This virtual site is described in terms of a rate, a burst size and a delay.
+The company can push a packet in Girona, and it will ``magically'' appear in Tarragona.
+In reality, the ISP will establish a LSP between the two sites.
+The ISP takes the packet received in Girona, sticks a label on to the packet, and it switches it through the network until it reaches Tarragona.
+Note that it does not matter what the packet is.
+Whatever it is, it will be taken from one site and delivered to the other.
+
+From the company's perspective, it is exactly the same as having a pipe that connects the two sites.
+In order to guarantee a given bandwidth and delay, the ISP must make a reservation in all the packets that are traversed by the LSP from Girona to Tarragona.
+This reservation has to be in terms of bandwidth and buffer space to accommodate the burst size.
+The protocol used to make the reservation for the LSP of the VPN is called ``Resource Reservation Protocol for Traffic Engineering'' (RSVP-TE).
+
+
+\section{Bandwidth reservation and RSVP-TE}
 
 
