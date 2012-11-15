@@ -40,8 +40,9 @@ The engineering of the paths that the data flows follow within the data networks
 
 Consider the example scenario in Fig. \ref{fig:traffic-engineering}.
 All the links are of 100 Mbps and a propagation delay of 10 ms.
+The only exception is link $B-C$ that has a larger delay.
 Imagine that you have to carry two flows from router $A$ to router $D$.
-One of the flows is a 20 Mbps VoIP flow that requires low delay, jitter and loss.
+One of the flows is a 25 Mbps VoIP flow that requires low delay, jitter and loss.
 The second flow is a 80 Mbps flow for remote backup that does not have tight delay and jitter requirements.
 
 \begin{figure}[!h]
@@ -56,9 +57,9 @@ It has the same bandwidth, less hops, and less total delay than the alternative 
 
 A datagram-oriented network would choose the best route for all the packet.
 Notice that this might not be the best of ideas.
-If we direct a total of 100 Mbps (20 of VoIP + 80 of backup data) to 100 Mbps links, queues will build up, and delay, jitter and packet loss will be high.
+If we direct a total of 105 Mbps (25 of VoIP + 80 of backup data) to 100 Mbps links, queues will build up, and delay, jitter and packet loss will be high.
 
-A better alternative is to direct the 20 Mbps of VoIP traffic to the short path $A-E-D$ and the 80 Mbps of backup traffic to the long link $A-B-C-D$.
+A better alternative is to direct the 25 Mbps of VoIP traffic to the short path $A-E-D$ and the 80 Mbps of backup traffic to the long link $A-B-C-D$.
 Using this solution, we make a better use of our network resources.
 All links are utilized, and they are all below 100\% utilization.
 This solution provides lower delay, jitter and packet loss for all classes of traffic, as the queues will not build up.
@@ -89,5 +90,81 @@ The protocol used to make the reservation for the LSP of the VPN is called ``Res
 
 
 \section{Bandwidth reservation and RSVP-TE}
+When a new LSP needs to be established, the first step is to decide the path that it will take.
+This step is performed with the constrained shortest past first (CSPF) protocol.
+CSPF is very similar to the popular open shortest path first (OSPF) protocol.
+The only difference is that in CSPF we can apply some constraints to prune the tree.
 
+This constraints can be placed in terms of bandwidth availability or ``colors''.
+The ``colors'' simply mark a given property of a link.
+As an example, a network administrator might decide to mark the high-latency link in Fig. \ref{fig:traffic-engineering.eps} as ``red''.
+Then, when looking for a path for the VoIP link, CSPF can take into account that ``red'' links must be avoided.
+In fact, CSPF prunes all the links that do not satisfy the constraints and then uses OSPF in the remaining topology.
+
+The protocol that is used for bandwidth reservation along the path is RSVP-TE.
+The LER at the network entry point of the LSP sends a RSVP-TE ``path'' message to the endpoint.
+This message is forwarded using CSPF along the path that the LSP will follow. 
+Each router in the path, adds his identifier to the path message.
+This information will be used to populate the forwarding table.
+
+When the ``path'' messages reaches the LSP tailend, the tailend router creates a ``rsvp'' message that will traverse exactly the same path as the ``path'' message but in the opposite direction.
+The ``rsvp'' message is the one that actually creates the reservation.
+The only purpose of the ``path'' message is to mark forward path.
+Remember that the paths on a data network are not necessarily symmetrical.
+For this reason, it is needed that the 'path' message if forwarded using the routing protocol from the headend to the tailend.
+The ``rsvp'' message is not forwarded using the routing protocol, but the information gathered by the ``path'' message.
+
+The ``path'' and the ``rsvp'' messages contain the information about the flow, in terms of data rate and bucket size.
+The ``rsvp'' makes the actual reservation and it is also used for each router to indicate the label it will use to receive the packets of the LSP.
+As an example, if a LSP is established through the routers $A-E-D$ in Fig. \ref{fig:traffic-engineering}, the tailend router $D$ will say in his RSVP message to $E$:
+``I am expecting to receive the packets marked with label 123''.
+And $E$ will tell to $A$: ``I am expecting to receive the packets marked with label 121''.
+And $E$ will include an entry to its lookup table with this information: ``When I receive a packet through the interface connected to $A$ with the label 121, I will swap the label to 123 and I will forward it to the interface connected to router $D$''.
+Router $E$ will also reserve the bandwidth and the buffer space required for the flow, and distribute the updated information of its available resources.
+Note that these actions take place in the control plane, it might be necessary to include a policer in the network entrypoint to ensure that the flows adhere to traffic profile (rate/bucket depth) that they have reserved.
+
+
+The RSVP-TE protocol has a soft-state, which means that it is maintained as long as it is refreshed by ``path'' and ``rsvp'' message.
+If none of this messages is received for a long time, the router cancels the reservation and frees the resources.
+
+The combination of selecting the path (using CSPF) and reserving router resources makes it possible to offer the guarantees agreed upon in the SLA.
+If no path is found that satisfies the criteria, or one of the routers cannot commit the requested resources (because the CSPF path has been computed with outdated information), the LSP cannot be established.
+
+RSVP-TE includes another ingredient which is the priority of a LSP.
+A LSP of higher priority can preempt a lower priority LSP.
+The low priority LSP then has to look for an alternative path.
+In the creation and destruction of LSPs, the ``make before break'' rule is always applied, to make sure that no traffic is blackholed.
+
+It is a common practice to assign higher priorities to larger (or more restrictive) flows, as smaller flows (or flows with lesser restrictions) are easier to accommodate.
+It is like filling a car's trunk. 
+People normally starts by putting the largest suitcases and then fitting the smaller ones in the empty spaces.
+
+\section{Fast Re-Route}
+
+One of the QoS requirements is availability.
+In case of failure, is it important to restore network services as soon as possible.
+The kind of traffic with more stringent requirements is VoIP.
+A network failure that lasts for more than 50 ms might be noticed by the users of a VoIP conversation.
+
+The protocols exchange ``hello'' messages with their neighbours to detect failures.
+If a router stops receiving the periodical hello messages from a neighbour it means that something is going wrong.
+Additionally, RSVP has built mechanisms to signal the failure of a path.
+When the headend of the LSP is notified of the failure, it can re-compute the path when when the routing protocol has re-converged.
+
+The only problem is that all this process, specially routing re-convergence, can take more than a second.
+And we would like to have path restoration below 50 ms.
+The solution is that, upon failure, a ``patch'' is applied to the path in the form of a ``detour''.
+The packets will be forwarded around the failed node or link until a new LSP is created.
+The ``patched'' LSP will be destroyed when the brand new LSP is operative, in a ``make before break'' fashion.
+
+\section{MPLS-DiffServ-TE}
+
+So far we have not discussed per-hop-behaviours in the context MPLS-TE.  
+If we want to have different classes of traffic and different PHB, is it interesting to take them into account when making reservations.
+A clear example is the use of EF for VoIP and the rule of not devoting more than 30\% of the bandwidth to this class.
+
+In the reservation process, we are not interested on how much bandwidth is available in a node.
+Instead, we are interested of how much EF bandwidth it is available.
+MPLS-DiffServ-TE provides the extensions to make the reservations on a per-class basis.
+Obviously, it is also necessary to distribute the information of bandwidth availability for the different classes.
 
