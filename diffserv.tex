@@ -13,7 +13,7 @@ This is not an exact science, but we'll cover the basics through examples and ty
 \section{Key aspects of DiffServ}
 DiffServ is an scalable solution for QoS provisioning in IP networks.
 DiffServ offers the tools for network administrators to implement QoS in an IP domain.
-This can be used to offer VPN that satisfy SLAs and to support services with tight QoS requirements such as VoIP.
+This can be used to offer VPNs that satisfy SLAs and to support services with tight QoS requirements such as VoIP.
 
 The interconnection of different DiffServ domains is somewhat more complicated, as needs the collaboration of the different organizations that manage the different networks.
 DiffServ is not commonly used for generic Internet access, as the Internet involves a humongous collection of networks which makes the provision of QoS guarantees an enormous challenge.
@@ -38,7 +38,7 @@ According to the initial classification, the edge router will mark the packets u
 
 \subsection{DiffServ Code Point}
 
-The DiffServ is a 6 byte field in the IP header that is assigned to each packet in the edge of the network.
+The DiffServ is a 6 bits field in the IP header that is assigned to each packet in the edge of the network.
 The DSCP assigns a packet to one of the possible traffic classes supported by the network.
 There are some standardized values for this field, such as Expedited Forwarding (EF), that we will review later.
 But its value is of significance within the DiffServ domain and therefore the network administrator have the decision of which DSCP values are used and what is the meaning of each of them.
@@ -100,7 +100,7 @@ AF12 will suffer a more aggressive RED profile to ensure that out-of-contract pa
 
 \subsection{Class Selector (CS)}
 This was included to provide some kind of backward compatibility with pre-DiffServ approaches.
-The first three bits (0-2) to indicate precedence higher value means higher precedence.
+The first three bits (0-2) to indicate precedence: higher value means higher precedence.
 A practical use is to ease mapping from IP QoS markings to EXP QoS markings.
 
 
