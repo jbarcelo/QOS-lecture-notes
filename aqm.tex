@@ -36,7 +36,7 @@ In summary, TCP will always try to increase its sending rate.
 Only when a packet is lost, TCP will reduce its sending rate as the packet loss is interpreted as a sign of congestion.
 Therefore, in principle, it is necessary to drop packets to signal TCP to lower its sending rate.
 
-\section{Long Fat Tails}
+\section{Long Fat Networks}
 
 As the bandwidth of the Internet lines increase, TCP needs to keep up with this progress and be able to fill this pipes.
 If you have a high-speed connection (say 1 Gps) and a long end-to-end delay (100ms), you need a lot of data to fill it.
@@ -81,7 +81,8 @@ Consequently, the queues were not very large because there was no room to store 
 As memory got cheaper, manufacturers beefed up their devices with more memory.
 This turned out not to be an improvement on the network performance, as larger buffers resulted in ``bufferbloat''.
 
-It is obvious that it is good to have maximum size of the queue and drop packets that arrive to a full queue.
+It is obvious that it is good to keep queues to a limited size, e.g., to avoid infinite queues.
+A first possibility, is to have a queue size and drop packets that arrive when the queue is full.
 This approach is called taildrop, as packets are dropped from the tail of the queue.
 
 The size of the queue can be measured in packets, in bytes or in milliseconds.
