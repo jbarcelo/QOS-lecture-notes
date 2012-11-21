@@ -34,16 +34,16 @@ The label is removed (popped) at the last or penultimate hop of the MPLS domain.
 
 One of the advantages of MPLS is that the same core can be used to transmit any kind of data.
 Another advantage is that it makes it possible to control the path that the packets follow.
-The engineering of the paths that the data flows follow within the data networks is called traffic engineering (TE).
+The engineering of the paths that the data streams follow within the data networks is called traffic engineering (TE).
 
 \section{Traffic Engineering}
 
 Consider the example scenario in Fig. \ref{fig:traffic-engineering}.
 All the links are of 100 Mbps and a propagation delay of 10 ms.
 The only exception is link $B-C$ that has a larger delay.
-Imagine that you have to carry two flows from router $A$ to router $D$.
-One of the flows is a 25 Mbps VoIP flow that requires low delay, jitter and loss.
-The second flow is a 80 Mbps flow for remote backup that does not have tight delay and jitter requirements.
+Imagine that you have to carry two streams from router $A$ to router $D$.
+One of the streams is a 25 Mbps VoIP stream that requires low delay, jitter and loss.
+The second stream is a 80 Mbps stream for remote backup that does not have tight delay and jitter requirements.
 
 \begin{figure}[!h]
 \centering
@@ -64,9 +64,9 @@ Using this solution, we make a better use of our network resources.
 All links are utilized, and they are all below 100\% utilization.
 This solution provides lower delay, jitter and packet loss for all classes of traffic, as the queues will not build up.
 
-This distribution of data flows in the network is called traffic engineering (TE).
+This distribution of data streams in the network is called traffic engineering (TE).
 Two reason to engage in TE is to balance the load among different parts of the network to prevent that some links are overloaded while others are empty.
-TE is also useful to prevent that delay sensitive flows cross high-latency links (such as satellite links).
+TE is also useful to prevent that delay sensitive streams cross high-latency links (such as satellite links).
 Finally, if combined with bandwidth reservation, it can provide guarantees which are important to meet the SLAs that are common in virtual private network services.
 
 \section{Virtual Private Networks using MPLS}
@@ -114,14 +114,14 @@ Remember that the paths on a data network are not necessarily symmetrical.
 For this reason, it is needed that the 'path' message if forwarded using the routing protocol from the headend to the tailend.
 The ``rsvp'' message is not forwarded using the routing protocol, but the information gathered by the ``path'' message.
 
-The ``path'' and the ``rsvp'' messages contain the information about the flow, in terms of data rate and bucket size.
+The ``path'' and the ``rsvp'' messages contain the information about the stream, in terms of data rate and bucket size.
 The ``rsvp'' makes the actual reservation and it is also used for each router to indicate the label it will use to receive the packets of the LSP.
 As an example, if a LSP is established through the routers $A-E-D$ in Fig. \ref{fig:traffic-engineering}, the tailend router $D$ will say in his RSVP message to $E$:
 ``I am expecting to receive the packets marked with label 123''.
 And $E$ will tell to $A$: ``I am expecting to receive the packets marked with label 121''.
 And $E$ will include an entry to its lookup table with this information: ``When I receive a packet through the interface connected to $A$ with the label 121, I will swap the label to 123 and I will forward it to the interface connected to router $D$''.
-Router $E$ will also reserve the bandwidth and the buffer space required for the flow, and distribute the updated information of its available resources.
-Note that these actions take place in the control plane, it might be necessary to include a policer in the network entrypoint to ensure that the flows adhere to traffic profile (rate/bucket depth) that they have reserved.
+Router $E$ will also reserve the bandwidth and the buffer space required for the stream, and distribute the updated information of its available resources.
+Note that these actions take place in the control plane, it might be necessary to include a policer in the network entrypoint to ensure that the streams adhere to traffic profile (rate/bucket depth) that they have reserved.
 
 
 The RSVP-TE protocol has a soft-state, which means that it is maintained as long as it is refreshed by ``path'' and ``rsvp'' message.
@@ -135,7 +135,7 @@ A LSP of higher priority can preempt a lower priority LSP.
 The low priority LSP then has to look for an alternative path.
 In the creation and destruction of LSPs, the ``make before break'' rule is always applied, to make sure that no traffic is blackholed.
 
-It is a common practice to assign higher priorities to larger (or more restrictive) flows, as smaller flows (or flows with lesser restrictions) are easier to accommodate.
+It is a common practice to assign higher priorities to larger (or more restrictive) streams, as smaller streams (or streams with lesser restrictions) are easier to accommodate.
 It is like filling a car's trunk. 
 People normally starts by putting the largest suitcases and then fitting the smaller ones in the empty spaces.
 
