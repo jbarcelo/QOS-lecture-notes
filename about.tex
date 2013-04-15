@@ -23,9 +23,9 @@ This is not the case.
 
 A good parallelism to understand QoS is road traffic.
 There are some vehicles (typically police, ambulance and firefighters) that receive priority over the others. 
-This is not perceived as something negative, as this vehicles incur in tasks that are more important or urgent than the average vehicle.
+This is not perceived as something negative, as these vehicles incur in tasks that are more important or urgent than the average vehicle.
 
-This parallelism is very illustrative to convey the idea, that QoS does not make the road wider, it simply prioritizes some traffic.
+This parallelism is very illustrative to convey the idea that QoS does not make the road wider, it simply prioritizes some traffic.
 
 At some point, networks engineers may face the dilemma of investing their efforts and money in either implementing QoS (prioritizing traffic) or increasing the available bandwidth (making the road wider).
 The latter option has the advantage that it benefits all the traffic of the network.
@@ -33,16 +33,17 @@ Ideally, if the bandwidth is sufficiently over-provisioned, the packets never ha
 In the road analogy, if the roads are wide enough, there are never traffic jams.
 
 Unfortunately, making the roads wider or the networks faster does not always solve the problem.
-As the users perceive that there is plenty of bandwidth available, they might decide to put it a better use by downloading collections of movies that they will never have time to see.
+As the users perceive that there is plenty of bandwidth available, they might decide to put it to better use by downloading collections of movies that they will never have time to see.
 There is nothing wrong with downloading collections of movies, but the sheer volumes of data may fill up the queues and introduce unacceptable delay and jitter in VoIP calls.
 
-And why is this a problem? Well, at some point network engineers that deploying separate networks for each service represented too much work (and money).
+An straightforward solution to prevent that peer-to-peer file sharing interferes with voice is keeping them in separate networks.
+Why not? Well, at some point network engineers realized that deploying separate networks for each service represented too much work (and money).
 From an engineering and economic point of view, it is much more advantageous to offer the different services on a single network.
 It is common nowadays that telephony, video-conference, web, remote backup and file sharing services share the same network.
 The term to refer to these networks that support various services is ``converged networks''.
 The only problem is that the different services have totally different requirements with regards to required bandwidth and delay.
 
-The service that consume a large amount of bandwidth and do not have strict delay requirements can easily create a ``traffic jam'' that prevents the offering of services with low delay requirements that consume very little amount of bandwidth.
+The services that consume a large amount of bandwidth and do not have strict delay requirements can easily create a ``traffic jam'' that prevents the offering of services with low delay requirements that consume very little amount of bandwidth.
 Obviously, it is still possible to offer the two kinds of service simultaneously if we implement QoS mechanisms that prioritizes the low delay traffic.
 
 QoS is a controversial topic.
@@ -173,7 +174,7 @@ I will collect the tests at the end of the class and give them back to you the f
 
 \subsection{Collaboration Policy}
 You are encouraged to collaborate with other students in the resolution of problems and assignments.
-However, you should firs try to solve it on your own.
+However, you should first try to solve it on your own.
 Then, you can discuss your solution with others and work together to find a better solution.
 Finally, you must ensure that you can solve the problem or assignment alone.
 
@@ -216,7 +217,7 @@ Avoid speaking while I am talking.
 It is not that you cannot talk in class.
 You can talk as much as you want when I am silent.
 I will make plenty of breaks in which I will ask you to discuss a question with your classmates.
-You can also take advantage of the moments in which I erase the blackboard or just scratch my head while staring.
+You can also take advantage of the moments in which I erase the blackboard or just scratch my head while staring at my notes.
 As long as I am not talking, you can talk with your classmates as much as you want.
 Obviously, questions are welcome at any time.
 
