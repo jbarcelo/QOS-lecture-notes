@@ -60,7 +60,7 @@ With this technique, jitter is effectively suppressed at the expense of increasi
 \label{fig:dejitter}
 \end{figure}
 
-The buffer size in terms of time and packets (or bytes) need to be carefully tuned, to prevent both packet overflow and underflow.
+The de-jitter buffer size in terms of time and packets (or bytes) need to be carefully tuned, to prevent both packet overflow and underflow.
 Buffer overflow happens when the buffer is full and cannot accommodate an arriving packet.
 Buffer underflow occurs when the decoder asks for a packet and the buffer is empty.
 
@@ -90,7 +90,7 @@ Furthermore, the round trip delay also limits how fast the Transfer Control Prot
 The congestion window grows upon the reception of TCP acknowledgements.
 If it takes long for the TCP acks to arrive, the congestion window grows slowly.
 
-In fact, it becomes difficult to take fully advantage of connections with a high \mbox{bandwidth x delay} product.
+In fact, it becomes difficult to take fully advantage of connections with a high \mbox{throughput x delay} product.
 These are known as ``long fat pipes'' or ``long fat networks'' (which is shortened as LFN and sometimes pronounced elephant), as explained in RFC 1072 \cite{rfc1072}.
 
 \section{Packet Loss}
@@ -118,40 +118,42 @@ The first network looses a packet out of every 100 packets, while the second one
 
 A VoIP application using packet loss concealment will be able to hide the packet loss of the first network, but not of the second one.
 If a packet voice is lost, the VoIP application can play the trick of playing the previous packet for two consecutive times, and the listener will hardly notice it.
-However, the loss of 10 consecutive packets may represent 2 seconds worth of audio that will be certainly noticed by the listener.
+However, the loss of 10 consecutive packets may represent 0.2 seconds worth of audio that are likely to be noticed by the listener.
 
 For a TCP application, the loss of a single packet will result in a quick retransmission.
 However, loosing 10 consecutive packets may move the TCP session back to the ``slow start'' mode and substantially reduce the throughput.
 
-\section{Bandwidth}
+\section{Throughput}
 
-Bandwidth or throughput is the amount of data transmitted per unit of time.
+Throughput (sometimes also referred to as bandwidth) is the amount of data transmitted per unit of time.
 Unfortunately, in practice it may have several different meanings.
 
 It can be related to the line speed, which is the maximum data achieved by the physical medium (e.g, 100 Mbps or 1Gbps).
 Some technologies have a variable data rate, such as WiFi, that adapts the transmission speed to channel conditions.
-Furthermore, for a given technology, the bandwidth depends on which is the protocol layer under consideration.
+Furthermore, for a given technology, the throughput depends on which is the protocol layer under consideration.
 As an example, a 54 Mbps WiFi device is capable of 54Mbps at the PHY layer, but roughly half of that is available at the network layer.
-The protocol overhead decrease the bandwidth as we move up the layer stack.
+The protocol overhead decrease the throughput as we move up the layer stack.
 
-Quite often the term bandwidth refers to the amount of data per unit of time that it is actually sent, not at the capabilities of the network.
-Or it may refer to the amount of bandwidth that has been contracted to the Internet Service Provider (ISP).
+Quite often the term throughput refers to the amount of data per unit of time that it is actually sent, not at the capabilities of the network.
+Or it may refer to the amount of throughput that has been contracted to the Internet Service Provider (ISP).
 It was common to define this contracts in terms of ``committed information rate'' (CIR) that the ISP promised to carry, and the ``peak information rate'' (PIR) that the ISP would carry if it was possible.
-This bandwidth could be measured using ``token buckets'' that allow for some burstiness. 
+This throughput could be measured using ``token buckets'' that allow for some burstiness. 
 
-Another interesting concept is the 95th percentile billing, which is the kind of contract between ISPs and heavy traffic.
+Another interesting concept is the 95th percentile billing, which is the kind of contract between ISPs and heavy traffic consumers/producers.
 In this contract there is a commit (or baseline speed) for a given price (say 20 Mbps for 180 Euro).
-The bandwidth consumption is measured in 5 minutes averages, and the 95th percentile value is considered.
+The throughput consumption is measured in 5 minutes averages, and the 95th percentile value is considered.
 Then, if the 95th percentile is higher than the committed rate, the customer has to pay extra fee for each Mbps exceeding the committed rate (e.g., 10 Euro per additional Mbps).
 
+The ISP normally have different kind of offers the user can choose from, depending on the predicted user consumption.
+For example, the same ISP considered in the previous paragraph might have an offer of 40 Mbps for 300 Eur plus 5 Eur for additional Mbps.
 \section{Packet re-ordering}
 
 Many applications need that the packets are received in the same order than they are sent.
-To this end, TCP re-order packets and don't offer the data to the upper layers if there are gaps in the data flow.
+To this end, TCP re-orders packets and doesn't offer the data to the upper layers if there are gaps in the data flow.
 Similarly, in a VoIP application the voice packets should be handled to the decoder in order.
 
-It is a desirable property of the networks that the maintain packet ordering.
-Some basic principles is assign packets belonging to the same flow to the same queue.
+It is a desirable property of the networks that they maintain packet ordering.
+A basic principle is to assign packets belonging to the same flow to the same queue.
 In case of a router that performs load balancing among different links, a hash of the source/destination ip address/port can be used to decide the path of the packet, to make sure that all packets of the same flow follow the same path.
 
 \section{Availability}
@@ -170,33 +172,35 @@ In ``series'' means that the system works only when all subsystems are working, 
 Broadly speaking, we can classify the applications in two different kinds: inelastic (or real-time) and elastic (non-real time).
 An example of an inelastic application is VoIP and an example of an elastic one is remote backup.
 
-Inelastic applications have a given bandwidth (and delay) requirements and are not flexible at all about this.
+Inelastic applications have a given throughput (and delay) requirements and are not flexible at all about this.
 As an example, if an streaming service requires 2Mbps, it will not work with 1.5 Mbits.
 The good part of the inelastic applications is that they only consume what they require.
 Using the same example streaming application, it will use only 2 Mbps even if there is more available.
 
 On the other side, elastic applications are more flexible about their requirements.
 If a backup service has only 1.5 Mbps available instead of 2 Mbps, the backup will take longer to complete that this is not typically a problem.
-Another characteristic of elastic applications is that they are often greedy, which means that they will take as much bandwidth as it is available.
-In this attempt to reach the limits of bandwidth availability, they create some temporary congestion or queue build up that is detrimental to real time services.
+Another characteristic of elastic applications is that they are often greedy, which means that they will take as much throughput as it is available.
+In this attempt to reach the limits of throughput availability, they create some temporary congestion or queue build up that is detrimental to real time services.
 
 Somewhere in between real time and non real time applications we find interactive applications. 
-They don't have the tight bandwidth and delay constraints of real time applications, but still they have to be responsive for the user to enjoy the experience.
+They don't have the tight throughput and delay constraints of real time applications, but still they have to be responsive for the user to enjoy the experience.
 Examples of interactive applications are web browsing, Internet messaging.
 
 \subsection{VoIP}
-It has tight delay constraints (below 200ms) and does not consume too much bandwidth.
+It has tight delay constraints (below 200ms) and does not consume too much throughput (around 100 Kbps per flow).
 As delay grows, conversation seems more artificial as there is the sensation that the other party is not responding.
 The human conversation protocols break down and it can be irritating.
 It is also unpleasant if there are noise and artifacts that make it difficult to understand the conversation, and for this reason packet loss has to be very low.
 
+A as a target reference, packet loss should be kept below 1\%.
+
 \subsection{Videoconference}
 The requirements for voice are the same as for VoIP.
-Regarding the video, it requires more bandwidth but the quality is usually not that important.
+Regarding the video, it requires more throughput but the quality is usually not that important.
 Users don't get too annoyed if the image freezes for half a second, as long as the voice quality is fine.
 
 \subsection{Streaming}
-It requires a lot of bandwidth and the display quality is important.
+It requires a lot of throughput and the display quality is important.
 The advantage is that it is possible for the receiver to have a buffer to partially alleviate jitter or even packet loss if retransmission is possible.
 
 \subsection{Video on demand}
@@ -204,7 +208,7 @@ In this case the, the buffer can be larger as the content is pre-recorded and it
 
 \subsection{Web browsing}
 In principle, the load placed by web browsing is low and the delay requirements are mild (a few hundreds of milliseconds is not a problem). 
-However, as the video on the web gains popularity, the bandwidth requirements are larger and get closer to those of Video on demand.
+However, as the video on the web gains popularity, the throughput requirements are larger and get closer to those of Video on demand.
 
 \subsection{Peer to peer file exchange and remote backup}
 This may involve the transmission of massive amounts of data.
