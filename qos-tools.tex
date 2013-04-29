@@ -186,13 +186,13 @@ Policers combine a meter and a dropper.
 The meter is a classifier that has been explained before, and the dropper simply drops packets.
 Policers play a role in enforcing CIR/PIR agreements and also in guaranteeing bounded delay for packets traversing the network, and a fair bandwidth distribution.
 
-If an SLA defines a PIR and the customer sends traffic over that peer, the ISP will police that traffic.
+If an SLA defines a PIR and the customer sends traffic exceeding the PIR, the ISP will police the exceeding traffic.
 A reasonable customer might police the traffic himself, to select which are the less important packets and avoid that the ISP drops packets.
 Another alternative is that the customers shapes its traffic.
 We will cover shapers in a later subsection.
 
 Policers can also be used before queues.
-By controlling the input rate of a queue (or a set of queues) it is possible to provide delay and bandwidth guarantees to each queue.
+By controlling the input rate and the size of a queue (or a set of queues) it is possible to provide delay and bandwidth guarantees to each queue.
 
 As an example, if a queue for VoIP packets is serviced at a rate of 100 Mbps and the input is policed at a rate or 1 Mbps, with a bucket size of 100 Kbits, the  delay is bounded to $\frac{10^5 bits}{10^8 bps} = 10^{-3}s$.
 Note that the delay guarantee is derived from the bucket size and not from the rate.
@@ -214,7 +214,7 @@ As soon as there are enough token in the bucket to serve the first packet of the
 As the buffer size is finite, it is possible that the buffer fills up and the shaper loses packets.
 
 Shapers are normally not appropriate for VoIP, as they introduce delay.
-However the can be used to set the pace of TCP flows effectively and for this reason it is said that they are TCP friendly.
+However they can be used to set the pace of TCP flows effectively and for this reason it is said that they are TCP friendly.
 
 By holding packets in the buffer, the shaper increases the RTT delay.
 The result is that the TCP rate is slowed down.
@@ -250,14 +250,14 @@ However, in low-speed lines, the packets stored in the TX-ring can substantially
 Consider the following example.
 A router transmits two kinds of traffic: VoIP and backup data.
 VoIP are short (100 bytes, 800 bits) and have strict priority over backup packets, which are long (1500 bytes, 12,000 bits).
-At a given point of time, the VoIP queue is empty and therefore the schedule serves packets of the low priority queue.
+At a given point of time, the VoIP queue is empty and therefore the scheduler serves packets of the low priority queue.
 The low priority queue may have a large number of packets (let's say 10) but the scheduler makes sure that there are not more than two packet in the Tx-ring.
 We have a situation in which we have two long packets in the Tx-ring and a VoIP packet arrives to the high priority queue.
 The VoIP packet has priority and therefore it will be the first one to be served by the scheduler.
 Still, it will have to wait for the two long packets in the Tx-ring which have already been served by the scheduler.
 
-Transmitting two 12,000 bits packets over a 1Mbit line takes around 24 ms, which is a substantial delay for VoIP packet.
+Transmitting two 12,000 bits packets over a 1Mbps line takes around 24 ms, which is a substantial delay for VoIP packet.
 To prevent this problem, an interleaver can be used in low speed link.
-The idea is that long packets are divided in smaller chunks.
-Then, the scheduler serves "chunks" of a packet, instead of the whole packet.
+The idea is that long packets are divided in smaller ``chunks''.
+Then, the scheduler serves chunks of a packet, instead of the whole packet.
 This approach reduces the delay and jitter for high priority traffic.
