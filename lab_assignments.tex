@@ -19,7 +19,7 @@ destination host, destination port, packet rate and traffic class.
 
 It generates UDP packets with a string that contains three integer values separated by a blank space. The integers represents a packet id (starting with 0), time stamp in milliseconds (local significance only) and traffic class.
 
-The traffic sink takes a port number as a parameter and computes packet delay and packet loss for each packet class (computation of jitter is optional).
+The traffic sink takes a port number as a parameter and computes packet delay and packet loss (computation of jitter is optional).
 
 Test it with a traffic generation rate of 10 packets per second.
 
@@ -48,6 +48,8 @@ All port numbers and the destination should be configurable as parameters. An ad
 The scheduler should be configurable to be able to choose an exponentially distributed service time or a deterministic service time. In either case, the service rate should be taken as an input parameter.
 
 Combine the Buffer with the traffic generator and traffic sink modules to make measures of packet loss and delay.
+
+Prepare a plot comparing the packet delay and packet loss obtained from the simulation and theoretical results.
 
 \begin{figure}[!h]
 \centering

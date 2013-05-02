@@ -10,5 +10,6 @@
 *.lof
 *.lot
 *.toc
+*.out
 quizzes/quiz0?/*
 quizzes/seminar0?/*
