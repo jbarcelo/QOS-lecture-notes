@@ -195,8 +195,9 @@ We will cover shapers in a later subsection.
 Policers can also be used before queues.
 By controlling the input rate and the size of a queue (or a set of queues) it is possible to provide delay and bandwidth guarantees to each queue.
 
+
 As an example, if a queue for VoIP packets is serviced at a rate of 100 Mbps and the input is policed at a rate or 1 Mbps, with a bucket size of 100 Kbits, the  delay is bounded to $\frac{10^5 bits}{10^8 bps} = 10^{-3}s$.
-Note that the delay guarantee is derived from the bucket size and not from the rate.
+Note that the delay guarantee is derived from the bucket size (or somewhat equivalently, queue size) and not from the rate.
 
 The rate limit is important when the voice queue is prioritized over other queues.
 If the priority queue is not policed, it can starve other queues in case of misbehaviour.

@@ -1,6 +1,6 @@
 \chapter{Scheduling}
 
-Scheduling is a key tool in QoS and it is complex enough to deserve its own chapter.
+Scheduling is a key tool in QoS and it is complex enough to deserve its own chapter\footnote{A word of warning is needed. In different books, articles and information sources, different names are used for the same scheduling techniques. To add to the confusion, a same technique name has different meanings when looking at different sources.}.
 A scheduler serves two or more queues and has to take decissions about which queue has to be served first.
 The combination of queues and scheduler can change the order of the packets.
 For this reason it is important that all packets of a same flow are mapped to the same queue, to prevent packet re-ordering.
@@ -9,7 +9,7 @@ For this reason it is important that all packets of a same flow are mapped to th
 
 Prioritizing is a core idea in QoS.
 Imagine that a big packet belonging to backup tool such as Dropbox arrives to a router.
-Right after that, a secon packet arrives to the same roter.
+Right after that, a second packet arrives to the same roter.
 Imagine that this second packet is a small VoIP packet.
 
 The VoIP packet is in a hurry, because it must make it to the decoder before the playout time.
@@ -17,7 +17,7 @@ For this reason, the combination of queues and scheduler will allow the VoIP pac
 
 In the simplest case we have only two queues: the high priority queue and low priority queue.
 A classifier maps each of the packets to one of the queues.
-The scheduler will serve the high priority whenever there is a packet in that queue.
+The scheduler will serve the high priority queue whenever there is a packet in that queue.
 Only when the high priory queue is empty, the scheduler will serve the low priority queue.
 
 Note that this concept can be easily generalized to the case in which there are more than two queues.
@@ -25,12 +25,12 @@ The principle is that a queue will be served only when all the higher priority q
 
 \subsection{Preemptive strict priority}
 In preemptive strict priority, if a high priority packet arrives while a low priority packet is being served, the service of the low priority queue is interrupted and the high priority packet is served immediately.
-Theoreticall, the service of the low priority packet is resumed when the high priority queue becomes empty.
+Theoretically, the service of the low priority packet is resumed when the high priority queue becomes empty.
 
 This approach is very benefitial for low priority packets as they are never disturbed by low priority packets.
 The only problem with this approach is that, in practice, it is not trivial to stop a transmission of a packet and later resume it.
 
-\subsection{Non-preemptive stric priority}
+\subsection{Non-preemptive strict priority}
 In non-preemptive strict priority, if a high priority packet arrives while a low priority packet is being served, the transmission is not interrupted.
 The high priority packet will wait for the transmission of the low priority packet to finish and then it will be transmitted.
 
@@ -39,7 +39,7 @@ The problem with this solution is that, in a slow transmission line, a high prio
 
 \subsection{Fragmenting and interleaving}
 An intermediate solution between the two mentioned before is fragmenting each packets in chunks and serving one chunk at a time. 
-Using this technique we can emulate a behaviour similar to preedmptive strict priority.
+Using this technique we can emulate a behaviour similar to preemptive strict priority.
 As it has been explained in the previous chapter, fragmenting and interleaving are used in low speed lines.
 
 \subsection{Starvation and policing}
@@ -68,7 +68,7 @@ If we want to prioritize Q1 over Q2 and Q3 and Q2 over Q3, we can configure the 
 And then repeat the same schedule again.
 Note that with this particular schedule, Q1 is served thrice in each round, Q2 is served twice and Q3 is served once.
 
-Round robin its flexible and precise when it comes to adjust the number of packets transmitted by each queue.
+Round robin is flexible and precise when it comes to adjust the number of packets transmitted by each queue.
 The actual bandwidth allocated to each queue depends on the schedule, but also on the length of the packets.
 
 Recovering our example of three queues, if the packets in Q3 are 12000 bits long and the packets of Q1 are 200 bits long, Q3 will receive twice as much bandwidth as Q1.
@@ -108,7 +108,7 @@ Both deficit counters are zero.
 In the first round, the deficit counters are incremented to 400 and 200, and no packet is served as the values of the counters are lower than the size of the packets.
 In the second round, the counter of the high priority queue is incremented to 800.
 The first packet is serviced and de counter is decremented to 300.
-While the first packet is being serviced, a 100 bytes packet and a 500 bytes packet arrive at the high priority queue.
+While the first packet is being serviced, a 100 bytes packet and a 500 bytes packet arrive to the high priority queue.
 When the service of the first packet finishes, the deficit counter of the first queue (300 bytes) is larger than the size of the head-of-queue packet (100 bytes).
 Consequently, the head-of-queue packet is served and the deficit counter is decremented to 200.
 At this point, the counter is smaller than the size of the head-of-queue packet and therefore the scheduler jumps to the next queue.
@@ -119,3 +119,7 @@ This packet is being served and the counter decremented.
 The scheduler moves to the first queue again, it increases the counter by the quantum (400) to 600.
 Then it serves the head-of-queue packet, which has 500 bytes, and decrements the deficit counter by 500.
 
+\section{Queue size}
+
+As an example, if a queue for VoIP packets is serviced at a rate of 100 Mbps and the input is policed at a rate or 1 Mbps, with a bucket size of 100 Kbits, the  delay is bounded to $\frac{10^5 bits}{10^8 bps} = 10^{-3}s$.
+Note that the delay guarantee is derived from the bucket size and not from the rate.
