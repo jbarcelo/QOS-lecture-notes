@@ -27,7 +27,7 @@ The principle is that a queue will be served only when all the higher priority q
 In preemptive strict priority, if a high priority packet arrives while a low priority packet is being served, the service of the low priority queue is interrupted and the high priority packet is served immediately.
 Theoretically, the service of the low priority packet is resumed when the high priority queue becomes empty.
 
-This approach is very benefitial for low priority packets as they are never disturbed by low priority packets.
+This approach is very beneficial for low priority packets as they are never disturbed by low priority packets.
 The only problem with this approach is that, in practice, it is not trivial to stop a transmission of a packet and later resume it.
 
 \subsection{Non-preemptive strict priority}
@@ -53,7 +53,7 @@ The solution to prevent starvation, is two police the high priority queue.
 
 The high priority traffic is policed before entering the queue to a fraction of the total bandwidth available in the interface (e.g., 10\% or 30\%).
 By doing so, the other queues are safe from starvation.
-Even if a virus, a warm, or a misconfigured generates a low of high priority traffic, it will not kill the network.
+Even if a virus, a worm, or a misconfigured generates a low of high priority traffic, it will not kill the network.
 
 \section{Round Robin Scheduling and Weighted Round Robin}
 
@@ -67,6 +67,7 @@ This property is called the work-conserving property, and guarantees the full ut
 If we want to prioritize Q1 over Q2 and Q3 and Q2 over Q3, we can configure the scheduler to serve the queues in this order: Q1, Q2, Q1, Q3, Q1, Q2.
 And then repeat the same schedule again.
 Note that with this particular schedule, Q1 is served thrice in each round, Q2 is served twice and Q3 is served once.
+This particular approach in which different queues have different weights is called Weighted Round Robin (WRR)
 
 Round robin is flexible and precise when it comes to adjust the number of packets transmitted by each queue.
 The actual bandwidth allocated to each queue depends on the schedule, but also on the length of the packets.
@@ -119,7 +120,3 @@ This packet is being served and the counter decremented.
 The scheduler moves to the first queue again, it increases the counter by the quantum (400) to 600.
 Then it serves the head-of-queue packet, which has 500 bytes, and decrements the deficit counter by 500.
 
-\section{Queue size}
-
-As an example, if a queue for VoIP packets is serviced at a rate of 100 Mbps and the input is policed at a rate or 1 Mbps, with a bucket size of 100 Kbits, the  delay is bounded to $\frac{10^5 bits}{10^8 bps} = 10^{-3}s$.
-Note that the delay guarantee is derived from the bucket size and not from the rate.
