@@ -12,7 +12,7 @@ The underlying reason seamed to be a poor buffer dimensioning\footnote{http://bl
 \section{TCP congestion control}
 We will introduce the working principles of TCP.
 This is not meant to be an accurate description of TCP, just an overview of the concepts used for congestion control.
-TCP is indeed very complex, heterogeneous (different in different OS) and continuously evolving.
+TCP is indeed very complex, heterogeneous (different in different OS), and continuously evolving.
 An accurate description of TCP is beyond the scope of this course.
 
 TCP is a flow-oriented transport (layer 4) protocol that is used by the elastic applications in Internet.
@@ -23,7 +23,7 @@ If this packet is successful, it will transmit two packets.
 These two packets represent, the amount of unacknowledged data on-the-fly and this limit is called the congestion window.
 And if these to packets are positively acknowledged, TCP will duplicate its congestion window one more time and send four packets.
 This process is called the slow start phase of TCP.
-Even though it starts slow, the true is that it is growing exponentially and, at some point, the transmitting rate will exceed the available capacity and a packet will be dropped.
+Even though it starts slow, the truth is that it is growing exponentially and, at some point, the transmitting rate will exceed the available capacity and a packet will be dropped.
 
 When TCP detects that a single packet has been dropped (signaled by a duplicate ack), it halves its congestion window and starts increasing it linearly at a rate of one MTU for RTT.
 This phase is called congestion avoidance, as TCP slowly grows its congestion window trying to find the limits of the available capacity.
@@ -39,7 +39,7 @@ Therefore, in principle, it is necessary to drop packets to signal TCP to lower 
 \section{Long Fat Networks}
 
 As the bandwidth of the Internet lines increase, TCP needs to keep up with this progress and be able to fill this pipes.
-If you have a high-speed connection (say 1 Gps) and a long end-to-end delay (100ms), you need a lot of data to fill it.
+If you have a high-speed connection (say 1 Gbps) and a long end-to-end delay (100ms), you need a lot of data to fill it.
 In this particular example, 100 Mbits of data are needed to fill the pipe.
 
 If TCP does not fill the pipe, and pushes only 1 Mbit of data in it, then it is wasting 99\% of the available bandwidth.
@@ -56,7 +56,7 @@ This problem seems to be prevalent in today's Interned, and has been termed ``bu
 Queues play a critical role in data packet networks.
 They absorb a temporal burst and smooth it out for transmission over a line.
 The burst can be caused by bursty sources and also by statistical multiplexing.
-A good queue absorbs the burst, fills it up, and then empties completely.
+A good queue absorbs the burst, fills up, and then empties completely.
 
 But there are also bad queues.
 Bad queues are full for a long time.
@@ -88,7 +88,7 @@ This approach is called taildrop, as packets are dropped from the tail of the qu
 The size of the queue can be measured in packets, in bytes or in milliseconds.
 To make the measure in time, we need to take into account the speed of the interface.
 This is normally a good idea, as the amount of data that needs to be buffered is closely related to the speed  of the line.
-Expressing the queue length in time also gives a direct idea of the delay that can introduce de queue.
+Expressing the queue length in time also gives a direct idea of the delay that the queue can introduce.
 
 As an example, a 10 ms queue size seems to be a fair size for many applications.
 A 10 seconds queue is probably excessive for many applications, such as web browsing.

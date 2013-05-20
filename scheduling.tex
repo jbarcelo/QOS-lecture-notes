@@ -27,7 +27,7 @@ The principle is that a queue will be served only when all the higher priority q
 In preemptive strict priority, if a high priority packet arrives while a low priority packet is being served, the service of the low priority queue is interrupted and the high priority packet is served immediately.
 Theoretically, the service of the low priority packet is resumed when the high priority queue becomes empty.
 
-This approach is very beneficial for low priority packets as they are never disturbed by low priority packets.
+This approach is very beneficial for high priority packets as they are never disturbed by low priority packets.
 The only problem with this approach is that, in practice, it is not trivial to stop a transmission of a packet and later resume it.
 
 \subsection{Non-preemptive strict priority}
