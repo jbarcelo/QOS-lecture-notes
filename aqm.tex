@@ -18,10 +18,9 @@ An accurate description of TCP is beyond the scope of this course.
 TCP is a flow-oriented transport (layer 4) protocol that is used by the elastic applications in Internet.
 This includes most of the applications, such as web browsing, email and file transfer.
 Take the example of a large file transfer using FTP, which involves the transmission of a large amount of data.
-TCP doesn't know how much bandwidth is available, so it will start transmitting one packet.
-If this packet is successful, it will transmit two packets.
-These two packets represent, the amount of unacknowledged data on-the-fly and this limit is called the congestion window.
-And if these to packets are positively acknowledged, TCP will duplicate its congestion window one more time and send four packets.
+TCP doesn't know how much bandwidth is available, so it will start transmitting two MSS worth of data.
+This is the initial value of the contention window (CW) which is the maximum amount of in-flight unacknowledged data is permitted.
+The CW is increased in one MSS for each received acknowledgement.
 This process is called the slow start phase of TCP.
 Even though it starts slow, the truth is that it is growing exponentially and, at some point, the transmitting rate will exceed the available capacity and a packet will be dropped.
 
