@@ -4,9 +4,9 @@ The IETF has proposed two main solutions for the Internet QoS architecture: Inte
 The first one implies per flow signaling and reservation, and therefore it does not scale well in large network.
 The focus of this chapter is on the second alternative.
 In differentiated services, traffic is classified in a reduced number of classes, typically less than eight.
-The routers implement different PHB for the different classes, which provides the desired QoS.
+The routers implement different PHB for the different classes, which provide the desired QoS.
 
-Note that since in Diffserv there is not a per flow signal and admission control, in principle it does not guarantee that the QoS requirements are actually satisfied.
+Note that since in Diffserv there is not a per flow signaling and admission control, in principle it does not guarantee that the QoS requirements are actually satisfied.
 In reality, this is achieved with a combination of traffic conditioning at the edge of the network and capacity planning.
 This is not an exact science, but we'll cover the basics through examples and typical configurations.
 
@@ -23,7 +23,7 @@ Three key aspects of DiffServ are border traffic conditioning, DiffServ markings
 \subsection{Traffic Conditioning}
 
 Together with the SLA, a traffic conditioning agreement (TCA) is also established.
-The TCA is often defined as a packet marking combined with token bucket bucket, of a given rate and depth.
+The TCA is often defined as a packet marking combined with token bucket, of a given rate and depth.
 For example, it may specify that packets with VoIP traffic will conform to a token bucket of rate 1Mbps and depth 1Kbps.
 
 At the edge of the network, the routers will perform classifying, metering and policing to ensure that the offered load complies with the specified TCA.
@@ -41,7 +41,7 @@ According to the initial classification, the edge router will mark the packets u
 The DiffServ is a 6 bits field in the IP header that is assigned to each packet in the edge of the network.
 The DSCP assigns a packet to one of the possible traffic classes supported by the network.
 There are some standardized values for this field, such as Expedited Forwarding (EF), that we will review later.
-But its value is of significance within the DiffServ domain and therefore the network administrator have the decision of which DSCP values are used and what is the meaning of each of them.
+But its value is of significance only within the DiffServ domain and therefore the network administrator have the decision of which DSCP values are used and what is the meaning of each of them.
 This marking can be used later by the other routers of the network to quickly classify the packet, and treat the packet in accordance of the traffic class to which it belongs.
 This treatment is the per-hop-behaviour (PHB).
 
@@ -80,7 +80,7 @@ Similar to EF, with the difference that Voice Admit (VA, \cite{rfc5865}) is subj
 \subsection{Assured Forwarding (AF)}
 
 Assured Forwarding is actually a group defined in \cite{rfc3260} that comprises 12 DSCPs.
-The packets belonging to this group will be forwarded is the offered rate is kept below the committed rate.
+The packets belonging to this group will be forwarded if the offered rate is kept below the committed rate.
 It differentiates four different classes: AF1x, AF2x, AF3x and AF4x.
 AF1x is the lowest priority and AF4x is the higher priority.
 A typical implementation is to assign each of the classes to a queue and use DRR to distribute the bandwidth among the classes.
@@ -97,6 +97,18 @@ AF11 and AF12 will be mapped to the same queue.
 This is an important aspect as otherwise packet re-ordering may occur.
 Then, different RED profiles will be applied to AF11 and AF12.
 AF12 will suffer a more aggressive RED profile to ensure that out-of-contract packets are the first to be dropped.
+
+RFC 2597 \cite{rfc2597} recommends the following DSCP values for AF.
+{\scriptsize 
+\begin{verbatim}
+                        Class 1    Class 2    Class 3    Class 4
+                      +----------+----------+----------+----------+
+     Low Drop Prec    |  001010  |  010010  |  011010  |  100010  |
+     Medium Drop Prec |  001100  |  010100  |  011100  |  100100  |
+     High Drop Prec   |  001110  |  010110  |  011110  |  100110  |
+                      +----------+----------+----------+----------+
+\end{verbatim}
+}
 
 \subsection{Class Selector (CS)}
 This was included to provide some kind of backward compatibility with pre-DiffServ approaches.

@@ -7,7 +7,7 @@ In this chapter we describe how TCP congestion control and Active Queue Manageme
 The interplay between TCP and AQM is critical to deliver satisfactory performance.
 In 2009, mainstream media\footnote{E.g. www.nytimes.com/2009/09/03/technology/companies/03att.html} reported performance problems in AT\&T's wireless data network.
 The alleged cause was the increase of data usage due to the popularity of IPhones.
-The underlying reason seamed to be a poor buffer dimensioning\footnote{http://blogs.broughturner.com/2009/10/is-att-wireless-data-congestion-selfinflicted.html}.
+The underlying reason seamed to be a poor buffer dimensioning\footnote{\url{http://blogs.broughturner.com/2009/10/is-att-wireless-data-congestion-selfinflicted.html}}.
 
 \section{TCP congestion control}
 We will introduce the working principles of TCP.
@@ -104,14 +104,20 @@ In this case, out-of-contact traffic has a higher dropping precedence that in-co
 
 The technique that uses different queue sizes for different packets is called weighted tail drop.
 
+A problem of taildrop is that, for the dropping signal to reach the sender, it takes a long time.
+While the buffer has packets, they will be transmitted and the receiver will continue sending positive acks.
+
+Another problem is that it is likely that a few consecutive packets are dropped.
+Consecutive packet loss increases the chances that TCP time-outs, which in general are much more detrimental than the loss of a single packet.
+Even worse, when the buffer is full, several TCP flows sharing the same buffer may time-out almost simultaneously, leading to the problem of TCP global synchronization described in the next section.
+
 \section{TCP global synchronization}
 
-Another event that penalizes network performance is TCP global synchronization.
-It occurs when a tail-drop queue accommodates packets of several TCP sessions.
+TCP global synchronization occurs when a tail-drop queue accommodates packets of several TCP sessions.
 The TCP sessions keep increasing their congestion windows and transmission speed until the queue fills up.
 At this point, the tail-drop queue drops all the arriving packets.
 
-All the TCP sessions detect packet loss and halve their sending rate simultaneously.
+All the TCP sessions detect packet loss and halve their sending rate (or reset it) simultaneously.
 As a result, the queue empties and then the link remains unused for some time.
 Then the TCP sessions starts growing again, and the story repeats one more time.
 
@@ -131,7 +137,7 @@ Packet loss is induced deliberately before the queue is full to signal the invol
 The big difference is that not all the flows receive this signal simultaneously.
 With RED, the packet drop is distributed evenly in time, so that the TCP halve their transmission rates at different instants and therefore the aggregated sending rate evolves smoothly in time.
 
-By avoiding the sharp drop of the aggregated sending rate in TCP global synchronization, it is possible to achieve a better utilization of the available bandwidth\footnote{Cisco provides a figure supporting this statement in http://www.cisco.com/image/gif/paws/10582/60c.gif}.
+By avoiding the sharp drop of the aggregated sending rate in TCP global synchronization, it is possible to achieve a better utilization of the available bandwidth\footnote{Cisco provides a figure supporting this statement in \url{http://www.cisco.com/image/gif/paws/10582/60c.gif}}.
 
 
 The first step to implement RED in a router is to compute the average delay\footnote{Note that recent papers point out that average queue delay is not a relevant metric to differentiate between good queues and bad queues \cite{nichols2012cqd}.}.
@@ -169,12 +175,16 @@ The sender will reduce the congestion window and activate the Congestion Window 
 The receiver will keep ECE activated in all the transmitted packets until receives the CWR from the sender.
 
 Upon reception of this ECE, the originating host will reduce its congestion window (and thus its transmitting rate) just as if a packet dropped has occurred.
-The advantage is that there is no need for packet re-transmission.
+The advantages are that there is no need for packet re-transmission and that the reaction time is shorter.
 This way, it is possible to achieve congestion control without packet dropping.
 
-A big improvement is improved in interactive protocols such as HTTP, telnet and SMPTP.
+A particularly noticeable improvement is perceived in interactive protocols such as HTTP, telnet and SMPTP.
 If the last packet (and probably single) packet of a message is dropped, the RTO expires and a retransmission occurs.
 This retransmission can be avoided using ECN.
+
+Despite all the advantages of ECN, it is not widely used yet.
+The reasons are that, for being effective, it is necessary that both endpoints and also the network equipment supports ECN.
+Furthermore, there are broken implementations in networking devices that do not recognize ECN and simply drop the packets that include 10 or 01 in the ECN field.
 
 \section{CoDel}
 The latest trend in AQM is Controlled Delay (or CoDel) \cite{nichols2012cqd}, which discards packets when the minimum queue occupation exceeds a threshold (in time).
