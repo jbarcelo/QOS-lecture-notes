@@ -155,7 +155,14 @@ P[packet accepted] = \frac{q_{avg}-q_{min}}{q_{max}-q_{min}}P_{max},
 \end{equation}
 
 where $P_{max}$ is yet another configuration parameter that determines the dropping probability when $q_{avg}$ approaches $q_{max}$ from the left.
-
+This curve is illustrated in Fig.~\ref{fig:RED}.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\linewidth]{figures/RED.eps}
+\caption{Dropping probability as a function of average queue delay in RED.}
+\label{fig:RED}
+\end{figure}
+  
 It is straightforward to generalize RED to weighted RED in which different packets use different profiles (different configuration parameters) in order to prioritize some packets over the others.
 Typically, packets with higher dropping precedence are exposed to more aggressive RED profiles.
 

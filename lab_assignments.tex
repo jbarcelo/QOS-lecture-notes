@@ -17,7 +17,7 @@ In this lab assignment you will program a Poisson traffic generator and a traffi
 The Poisson traffic generator takes the following parameters:
 destination host, destination port, packet rate and traffic class.
 
-It generates UDP packets with a string that contains three integer values separated by a blank space. The integers represents a packet id (starting with 0), time stamp in milliseconds (local significance only) and traffic class.
+It generates UDP packets with a string that contains three integer values separated by a blank space. The integers represents a packet id (starting with 0), time stamp in milliseconds (local significance only) and traffic class\footnote{Some students reported a mysterious problem disappearing when adding a trailing space}.
 
 The traffic sink takes a port number as a parameter and computes packet delay and packet loss (computation of jitter is optional).
 
@@ -89,7 +89,7 @@ Prepare a plot combining analytical results and simulation results.
 \section{Optional QoS Tool}
 
 In this lab assignment you will implement one ore more QoS tools of your choice.
-You can choose any of the following tools that we have seen in class: classifier, metering, token-bucket policer, leaky bucket shaper with RED, re-write.
+You can choose any of the tools that we have seen in class, e.g.,  classifier, metering, token-bucket policer, (weighted) RED, weighted taildrod, re-write.
 
 A brief description of each of the tools follows:
 \begin{itemize}
@@ -103,11 +103,13 @@ A brief description of each of the tools follows:
   \item{token-bucket policer:}
   It takes two parameters: rate (packets per second) and burst size (packets).
   Non-compliant packets are discarded.
-  \item{leaky bucket shaper with RED}
+  \item{ RED}
   It takes a rate and a size as input parameters.
-  There are two different approaches to implement RED: class-aware and class-blind.
-  In the class-aware approach, only the high priority traffic is accepted when the occupancy of the queue exceeds 50\%.
-  In the class-blind approach, the probability of dropping an arriving packet is equal to the occupancy of queue at the moment of arrival.
+   The probability of dropping an arriving packet is equal to the occupancy of queue at the moment of arrival.
+  \item{Weighted taildrop }
+  It takes a rate and a size as input parameters.
+  The queue only accepts high priority packets when the queue is half-full.
+   The probability of dropping an arriving packet is equal to the occupancy of queue at the moment of arrival.
   \item{re-write}
   It changes the class field of the packet.
 \end{itemize}
@@ -118,8 +120,8 @@ The idea is that different groups implement different tools.
 Keep in mind that in the next (last) lab assignment you should combine your tool and some of your classmate's tools to create a QoS scenario in which different service classes will receive a different treatment.
 You may first think about your scenario and then choose the tool you want to implement accordingly.
 
-The complexity of metering, token-bucket policer and leaky bucket shaper with RED is considerably higher than the other options.
-It is highly recommended that each group implements at least one of these three tools.
+%The complexity of metering, token-bucket policer and leaky bucket shaper with RED is considerably higher than the other options.
+%It is highly recommended that each group implements at least one of these three tools.
 
 \section{Design and evaluate your own scenario}
 

@@ -79,7 +79,7 @@ Similar to EF, with the difference that Voice Admit (VA, \cite{rfc5865}) is subj
 
 \subsection{Assured Forwarding (AF)}
 
-Assured Forwarding is actually a group defined in \cite{rfc3260} that comprises 12 DSCPs.
+Assured Forwarding is actually a group defined in RFC 2597 \cite{rfc2597} that comprises 12 DSCPs.
 The packets belonging to this group will be forwarded if the offered rate is kept below the committed rate.
 It differentiates four different classes: AF1x, AF2x, AF3x and AF4x.
 AF1x is the lowest priority and AF4x is the higher priority.
@@ -99,6 +99,7 @@ Then, different RED profiles will be applied to AF11 and AF12.
 AF12 will suffer a more aggressive RED profile to ensure that out-of-contract packets are the first to be dropped.
 
 RFC 2597 \cite{rfc2597} recommends the following DSCP values for AF.
+
 {\scriptsize 
 \begin{verbatim}
                         Class 1    Class 2    Class 3    Class 4
