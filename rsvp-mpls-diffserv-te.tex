@@ -17,7 +17,7 @@ Each of the packets has a header which is called ``the label''.
 In fact, a packet may contain multiple labels and it is said that they are ``stackable''.
 The last label can be found on top.
 
-Upon reception of a packet, the outermost label it is inspected.
+Upon reception of a packet, the outermost label is inspected.
 Each router has a lookup table indicating, for every incoming label, the outcoming label and the outcoming interface.
 The rooter simply performs the lookup, pops the outermost label and pushes a new label before forwarding the packet.
 To populate the lookup table, the LSP is established before starting forwading packets.
@@ -28,7 +28,7 @@ The LSP is established between two LER and then all the packets in the LSP follo
 MPLS is protocol agnostic in the sense that can carry any kind of packets.
 Examples are IP packets and Ethernet packets.
 This functionality can be used to create both Layer-3 and Layer-2 virtual private networks.
-MPLS simply stick a label on top of any packet (ethernet, IP, etc.)  in the LER which is the entry point of the MPLS domain.
+MPLS simply sticks a label on top of any packet (ethernet, IP, etc.)  in the LER which is the entry point of the MPLS domain.
 This MPLS packet is forwarded by MPLS by looking only to the label.
 The label is removed (popped) at the last or penultimate hop of the MPLS domain.
 
@@ -76,7 +76,7 @@ This company wishes to have a single network shared among the two sites.
 The option of deploying a fiber to connect the two sites might be an overkill.
 Another option might be to approach an ISP and pay for a ``virtual connection'' between the two sites.
 
-This virtual site is described in terms of a rate, a burst size and a delay.
+This virtual connection is described in terms of a rate, a burst size and a delay.
 The company can push a packet in Girona, and it will ``magically'' appear in Tarragona.
 In reality, the ISP will establish a LSP between the two sites.
 The ISP takes the packet received in Girona, sticks a label on to the packet, and it switches it through the network until it reaches Tarragona.
@@ -97,7 +97,7 @@ The only difference is that in CSPF we can apply some constraints to prune the t
 
 This constraints can be placed in terms of bandwidth availability or ``colors''.
 The ``colors'' simply mark a given property of a link.
-As an example, a network administrator might decide to mark the high-latency link in Fig. \ref{fig:traffic-engineering.eps} as ``red''.
+As an example, a network administrator might decide to mark the high-latency link in Fig. \ref{fig:traffic-engineering} as ``red''.
 Then, when looking for a path for the VoIP link, CSPF can take into account that ``red'' links must be avoided.
 In fact, CSPF prunes all the links that do not satisfy the constraints and then uses OSPF in the remaining topology.
 
@@ -109,7 +109,7 @@ This information will be used to populate the forwarding table.
 
 When the ``path'' messages reaches the LSP tailend, the tailend router creates a ``rsvp'' message that will traverse exactly the same path as the ``path'' message but in the opposite direction.
 The ``rsvp'' message is the one that actually creates the reservation.
-The only purpose of the ``path'' message is to mark forward path.
+The only purpose of the ``path'' message is to mark the forward path.
 Remember that the paths on a data network are not necessarily symmetrical.
 For this reason, it is needed that the 'path' message if forwarded using the routing protocol from the headend to the tailend.
 The ``rsvp'' message is not forwarded using the routing protocol, but the information gathered by the ``path'' message.
