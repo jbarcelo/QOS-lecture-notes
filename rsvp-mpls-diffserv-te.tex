@@ -111,8 +111,8 @@ When the ``path'' messages reaches the LSP tailend, the tailend router creates a
 The ``rsvp'' message is the one that actually creates the reservation.
 The only purpose of the ``path'' message is to mark the forward path.
 Remember that the paths on a data network are not necessarily symmetrical.
-For this reason, it is needed that the 'path' message if forwarded using the routing protocol from the headend to the tailend.
-The ``rsvp'' message is not forwarded using the routing protocol, but the information gathered by the ``path'' message.
+For this reason, it is needed that the ``path'' message if forwarded using the routing protocol from the headend to the tailend.
+The ``rsvp'' message is not forwarded using the routing protocol, but with the information gathered by the ``path'' message.
 
 The ``path'' and the ``rsvp'' messages contain the information about the stream, in terms of data rate and bucket size.
 The ``rsvp'' makes the actual reservation and it is also used for each router to indicate the label it will use to receive the packets of the LSP.
@@ -121,10 +121,11 @@ As an example, if a LSP is established through the routers $A-E-D$ in Fig. \ref{
 And $E$ will tell to $A$: ``I am expecting to receive the packets marked with label 121''.
 And $E$ will include an entry to its lookup table with this information: ``When I receive a packet through the interface connected to $A$ with the label 121, I will swap the label to 123 and I will forward it to the interface connected to router $D$''.
 Router $E$ will also reserve the bandwidth and the buffer space required for the stream, and distribute the updated information of its available resources.
-Note that these actions take place in the control plane, it might be necessary to include a policer in the network entrypoint to ensure that the streams adhere to traffic profile (rate/bucket depth) that they have reserved.
+Note that these actions take place in the control plane. 
+It might be necessary to include a policer in the network entrypoint to ensure that the streams adhere to traffic profile (rate/bucket depth) that they have reserved.
 
 
-The RSVP-TE protocol has a soft-state, which means that it is maintained as long as it is refreshed by ``path'' and ``rsvp'' message.
+The RSVP-TE protocol has a soft-state, which means that it is maintained as long as it is refreshed by ``path'' and ``rsvp'' messages.
 If none of this messages is received for a long time, the router cancels the reservation and frees the resources.
 
 The combination of selecting the path (using CSPF) and reserving router resources makes it possible to offer the guarantees agreed upon in the SLA.
@@ -149,7 +150,7 @@ A network failure that lasts for more than 50 ms might be noticed by the users o
 The protocols exchange ``hello'' messages with their neighbours to detect failures.
 If a router stops receiving the periodical hello messages from a neighbour it means that something is going wrong.
 Additionally, RSVP has built mechanisms to signal the failure of a path.
-When the headend of the LSP is notified of the failure, it can re-compute the path when when the routing protocol has re-converged.
+When the headend of the LSP is notified of the failure, it can re-compute the path when the routing protocol has re-converged.
 
 The only problem is that all this process, specially routing re-convergence, can take more than a second.
 And we would like to have path restoration below 50 ms.

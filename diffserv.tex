@@ -115,11 +115,101 @@ RFC 2597 \cite{rfc2597} recommends the following DSCP values for AF.
 This was included to provide some kind of backward compatibility with pre-DiffServ approaches.
 The first three bits (0-2) to indicate precedence: higher value means higher precedence.
 A practical use is to ease mapping from IP QoS markings to EXP QoS markings.
-The recommended DSCP take the form XXX000BIN.
+The recommended DSCPs take the form XXX000BIN.
 
+\subsection{DSCP recommendations}
+
+RFC 4594 \cite{rfc4594} offers recommendations about which DSCP to use for different kinds of traffic.
+Normally, a network administrator will choose only a subset of those DSCP, according to the traffic that needs to be supported in a particular network.
+
+{\scriptsize
+\begin{verbatim}
+    ------------------------------------------------------------------
+   |   Service     |  DSCP   |    DSCP     |       Application        |
+   |  Class Name   |  Name   |    Value    |        Examples          |
+   |===============+=========+=============+==========================|
+   |Network Control|  CS6    |   110000    | Network routing          |
+   |---------------+---------+-------------+--------------------------|
+   | Telephony     |   EF    |   101110    | IP Telephony bearer      |
+   |---------------+---------+-------------+--------------------------|
+   |  Signaling    |  CS5    |   101000    | IP Telephony signaling   |
+   |---------------+---------+-------------+--------------------------|
+   | Multimedia    |AF41,AF42|100010,100100|   H.323/V2 video         |
+   | Conferencing  |  AF43   |   100110    |  conferencing (adaptive) |
+   |---------------+---------+-------------+--------------------------|
+   |  Real-Time    |  CS4    |   100000    | Video conferencing and   |
+   |  Interactive  |         |             | Interactive gaming       |
+   |---------------+---------+-------------+--------------------------|
+   | Multimedia    |AF31,AF32|011010,011100| Streaming video and      |
+   | Streaming     |  AF33   |   011110    |   audio on demand        |
+   |---------------+---------+-------------+--------------------------|
+   |Broadcast Video|  CS3    |   011000    |Broadcast TV & live events|
+   |---------------+---------+-------------+--------------------------|
+   | Low-Latency   |AF21,AF22|010010,010100|Client/server transactions|
+   |   Data        |  AF23   |   010110    | Web-based ordering       |
+   |---------------+---------+-------------+--------------------------|
+   |     OAM       |  CS2    |   010000    |         OAM&P            |
+   |---------------+---------+-------------+--------------------------|
+   |High-Throughput|AF11,AF12|001010,001100|  Store and forward       |
+   |    Data       |  AF13   |   001110    |     applications         |
+   |---------------+---------+-------------+--------------------------|
+   |    Standard   | DF (CS0)|   000000    | Undifferentiated         |
+   |               |         |             | applications             |
+   |---------------+---------+-------------+--------------------------|
+   | Low-Priority  |  CS1    |   001000    | Any flow that has no BW  |
+   |     Data      |         |             | assurance                |
+    ------------------------------------------------------------------
+\end{verbatim}
+}
+
+The same RFC offers recommendation about edge conditioning, PHB, scheduler configuration and AQM.
+
+{\scriptsize
+\begin{verbatim}
+    ------------------------------------------------------------------
+   |  Service      | DSCP | Conditioning at   |   PHB   | Queuing| AQM|
+   |   Class       |      |    DS Edge        |  Used   |        |    |
+   |===============+======+===================+=========+========+====|
+   |Network Control| CS6  | See Section 3.1   | RFC2474 |  Rate  | Yes|
+   |---------------+------+-------------------+---------+--------+----|
+   |   Telephony   |  EF  |Police using sr+bs | RFC3246 |Priority| No |
+   |---------------+------+-------------------+---------+--------+----|
+   |   Signaling   | CS5  |Police using sr+bs | RFC2474 |  Rate  | No |
+   |---------------+------+-------------------+---------+--------+----|
+   |   Multimedia  | AF41 |  Using two-rate,  |         |        | Yes|
+   | Conferencing  | AF42 |three-color marker | RFC2597 |  Rate  | per|
+   |               | AF43 | (such as RFC 2698)|         |        |DSCP|
+   |---------------+------+-------------------+---------+--------+----|
+   |   Real-Time   | CS4  |Police using sr+bs | RFC2474 |  Rate  | No |
+   |   Interactive |      |                   |         |        |    |
+   |---------------+------+-------------------+---------|--------+----|
+   |  Multimedia   | AF31 |  Using two-rate,  |         |        | Yes|
+   |  Streaming    | AF32 |three-color marker | RFC2597 |  Rate  | per|
+   |               | AF33 | (such as RFC 2698)|         |        |DSCP|
+   |---------------+------+-------------------+---------+--------+----|
+   |Broadcast Video| CS3  |Police using sr+bs | RFC2474 |  Rate  | No |
+   |---------------+------+-------------------+---------+--------+----|
+   |    Low-       | AF21 | Using single-rate,|         |        | Yes|
+   |    Latency    | AF22 |three-color marker | RFC2597 |  Rate  | per|
+   |    Data       | AF23 | (such as RFC 2697)|         |        |DSCP|
+   |---------------+------+-------------------+---------+--------+----|
+   |     OAM       | CS2  |Police using sr+bs | RFC2474 |  Rate  | Yes|
+   |---------------+------+-------------------+---------+--------+----|
+   |    High-      | AF11 |  Using two-rate,  |         |        | Yes|
+   |  Throughput   | AF12 |three-color marker | RFC2597 |  Rate  | per|
+   |    Data       | AF13 | (such as RFC 2698)|         |        |DSCP|
+   |---------------+------+-------------------+---------+--------+----|
+   |   Standard    | DF   | Not applicable    | RFC2474 |  Rate  | Yes|
+   |---------------+------+-------------------+---------+--------+----|
+   | Low-Priority  | CS1  | Not applicable    | RFC3662 |  Rate  | Yes|
+   |     Data      |      |                   |         |        |    |
+    ------------------------------------------------------------------
+\end{verbatim}
+}
 
 \subsection{Differentiated Services in MPLS}
-In MPLS there are only three EXP bits for QoS markings.
+An MPLS header contains: a label value (20 bits), an experimental EXP value used for QoS (3 bits), a bottom-of-stack flag (1 bit)  and a TTL field (8 bits).
+There are only three EXP bits for QoS markings, compared to the six available in IP.
 If the ``class selector'' PHB are used, which use only the first three bits of the six available in DSCP, it is very easy to map from DSCP to EXP and the other way around.
 All is needed is to copy those three bits when an IP packet enters the MPLS domain.
 
