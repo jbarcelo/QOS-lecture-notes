@@ -19,7 +19,7 @@ The last label can be found on top.
 
 Upon reception of a packet, the outermost label is inspected.
 Each router has a lookup table indicating, for every incoming label, the outcoming label and the outcoming interface.
-The rooter simply performs the lookup, pops the outermost label and pushes a new label before forwarding the packet.
+The router simply performs the lookup, pops the outermost label and pushes a new label before forwarding the packet.
 To populate the lookup table, the LSP is established before starting forwading packets.
 
 In MPLS, the routers are called Label Switch Routers (LSR) and the edge routers Label Edge Routers (LER).
@@ -55,7 +55,7 @@ The second stream is a 80 Mbps stream for remote backup that does not have tight
 The best route between $A$ and $D$ is $A-E-D$.
 It has the same bandwidth, less hops, and less total delay than the alternative path $A-B-C-D$.
 
-A datagram-oriented network would choose the best route for all the packet.
+A datagram-oriented network would choose the best route for all the packets.
 Notice that this might not be the best of ideas.
 If we direct a total of 105 Mbps (25 of VoIP + 80 of backup data) to 100 Mbps links, queues will build up, and delay, jitter and packet loss will be high.
 
@@ -65,7 +65,7 @@ All links are utilized, and they are all below 100\% utilization.
 This solution provides lower delay, jitter and packet loss for all classes of traffic, as the queues will not build up.
 
 This distribution of data streams in the network is called traffic engineering (TE).
-Two reason to engage in TE is to balance the load among different parts of the network to prevent that some links are overloaded while others are empty.
+A reason to engage in TE is to balance the load among different parts of the network to prevent that some links are overloaded while others are empty.
 TE is also useful to prevent that delay sensitive streams cross high-latency links (such as satellite links).
 Finally, if combined with bandwidth reservation, it can provide guarantees which are important to meet the SLAs that are common in virtual private network services.
 
@@ -126,7 +126,7 @@ It might be necessary to include a policer in the network entrypoint to ensure t
 
 
 The RSVP-TE protocol has a soft-state, which means that it is maintained as long as it is refreshed by ``path'' and ``rsvp'' messages.
-If none of this messages is received for a long time, the router cancels the reservation and frees the resources.
+If none of these messages is received for a long time, the router cancels the reservation and frees the resources.
 
 The combination of selecting the path (using CSPF) and reserving router resources makes it possible to offer the guarantees agreed upon in the SLA.
 If no path is found that satisfies the criteria, or one of the routers cannot commit the requested resources (because the CSPF path has been computed with outdated information), the LSP cannot be established.
@@ -149,7 +149,7 @@ A network failure that lasts for more than 50 ms might be noticed by the users o
 
 The protocols exchange ``hello'' messages with their neighbours to detect failures.
 If a router stops receiving the periodical hello messages from a neighbour it means that something is going wrong.
-Additionally, RSVP has built mechanisms to signal the failure of a path.
+Additionally, RSVP has built in mechanisms to signal the failure of a path.
 When the headend of the LSP is notified of the failure, it can re-compute the path when the routing protocol has re-converged.
 
 The only problem is that all this process, specially routing re-convergence, can take more than a second.
