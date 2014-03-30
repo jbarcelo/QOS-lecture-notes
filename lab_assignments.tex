@@ -35,6 +35,11 @@ Then these values will no longer be zero.
 \label{fig:scenario}
 \end{figure}
 
+\subsection{Extra challenge:} 
+Save the inter-arrival time between packets and plot a frequency hystogram.
+Verify that you obtain a decaying exponential shape.
+
+
 \section{A queue}
 
 The second module that you have to construct in this course contains a queue (that includes a dropper a buffer) and a scheduler.
@@ -190,6 +195,12 @@ Remove fair queueing.
 
 \texttt{tc qdisc add dev eth0 root sfq perturb 10}
 
-Try the experiment using iperf with TCP. 
+The latest releases of Linux include changes that improve the behaviour of TCP.
+Try the experiment using iperf with TCP.
 What happens? Why?
 
+\subsection{Changing the DSCP value}
+
+Try to change the DSCP value of packets with a destination port equal to 80 and then observe the changes using wireshark.
+
+\texttt{tc qdisc add dev eth0 root sfq perturb 10}
