@@ -17,7 +17,7 @@ In this lab assignment you will program a Poisson traffic generator and a traffi
 The Poisson traffic generator takes the following parameters:
 destination host, destination port, packet rate and traffic class.
 
-It generates UDP packets with a string that contains three integer values separated by a blank space. The integers represents a packet id (starting with 0), time stamp in milliseconds (local significance only) and traffic class\footnote{Some students reported a mysterious problem disappearing when adding a trailing space}.
+It generates UDP packets with a string that contains three integer values separated by a blank space. The integers represents a packet id (starting with 0), time stamp in milliseconds (local significance only) and traffic class. Add also a final trailing space.
 
 The traffic sink takes a port number as a parameter and computes packet delay and packet loss (computation of jitter is optional).
 
@@ -35,9 +35,11 @@ Then these values will no longer be zero.
 \label{fig:scenario}
 \end{figure}
 
-\subsection{Extra challenge:} 
+\subsection{Extra challenges:} 
 Save the inter-arrival time between packets and plot a frequency hystogram.
 Verify that you obtain a decaying exponential shape.
+
+Test your programs with other groups programs to verify interoperability.
 
 
 \section{A queue}

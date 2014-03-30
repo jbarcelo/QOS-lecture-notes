@@ -1,0 +1,20 @@
+\chapter{Linux QoS}
+
+In this chapter we will overview the queues and QoS tools available in linux.
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\linewidth]{figures/linux_qos.eps}
+\caption{Flow of packets through different layers and queues.}
+\label{fig:linux_qos}
+\end{figure}
+
+As shown in Fig.~\ref{fig:linux_qos}, a linux box transmits two kinds of packets.
+On the one hand we have the packets coming from local applications, such as a web browser.
+On the other hand, there is traffic that has been received from another interface and it is being forwarded towards the final destination.
+The second kind of traffic is present only if the computer is working as a router.
+
+The IP stack places the packets into the \emph{queueing discipline} layer.
+It is in this layer in which linux can apply QoS tools to the outgoing traffic.
+Then, the packets are sent to the driver queue (or transmission ring queue), which is a simple FIFO queue in which there is no chance of using QoS tools.
+Finally, the network interface card takes packet
+
