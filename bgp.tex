@@ -1,0 +1,92 @@
+\chapter{An Introduction to BGP}
+
+As the Internet grew it was no longer possible to keep all routers in a single routing domain.
+It was necessary to add another layer of organization.
+All the router that belonged to the same organization and where controlled by the same network administration team were grouped in an Autonomous System.
+For example, Universitat Pompeu Fabra belongs to autonomous system Red Iris with Autonomous System Number AS766.
+Guifi.net is a community network that has AS49835.
+
+Within an autonomous system, the system administrators configure an Interior Gateway Protocol IGP.
+Examples of IGP are RIP, OSPF and IS-IS.
+The network administration team agrees in the protocol that is going to be used and the per-hop metrics.
+Then the protocol computes the routes that minimize those metrics.
+
+There is another layer of routing between Autonomous Systems.
+When a network has a packet destined to another autonomous system, it needs to decide to which neighbouring autonomous system tha packet will be forwarded.
+
+The protocol that is used in the Internet to route between Autonmous Systems is the Border Gateway Protocol (BGP).
+A key difference between IGPs and BGPs is that the latter routes packets between different organizations that not necessarily trust each other nor share the same goals.
+Choosing the shorter path is not always the best option, and it is not possible in agreeing in common metric for each connection between two ASs.
+If two alternative paths exist, one AS may prefer one path and the other AS the other path.
+
+There are ASs of many different sizes and scopes.
+Some ASs are local and provide access to end users, while others are international and only provide services to other ISPs.
+An example of the former is Jazztel and an example of the latter is Cogent.
+
+The connections between ISPs can be of two different types: either transit or peering.
+In the peering relation, two ISPs exchange traffic without charging each other.
+In the case of transit, there is one ISP that is a customer of the other and pays for the carried traffic.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\linewidth]{figures/peering-and-transit.eps}
+\caption{Example network topology with Autonomous Systems and peering and transit connections}
+\label{fig:peering-and-transit}
+\end{figure}
+
+Fig.~\ref{fig:peering-and-transit} shows an example topology in which clouds represent autonomous systems that are connected with transit and peering links.
+Different autonomous systems normally connect at Internet exchange points. 
+Catnix is one example of an Internet exchange point.
+
+In routing between different ASs, it is necessary to account for policy.
+Each ASs has a different policy that is translated to routing announcements and routing decisions. 
+
+For example, if C has a packet for the AS G, the shortest path is via AS A.
+However, AS C has to pay for the transit that is sent to A, and therefore C prefers to send the packet to AS D with which it has a peering agreement.
+In this case, policy is taken into account to make a routing decision.
+
+An example of route announcement conditioned by policy is that AS D does not announce a route to AS E to AS C even though this route exists.
+The reason is that AS D is not being payed for carrying transit from AS C to AS E and in principle has no incentive to carry that traffic.
+
+With BGP both route announcements and routing decisions can be conditioned by policy.
+In principle, the order of preference for routing a packet is 
+\begin{itemize}
+\item to a client (the AS makes money)
+\item to a peer
+\item to a provider (the AS pays money)
+\end{itemize}
+
+Regarding the announcements, the normal policy is
+\begin{itemize}
+\item announce the routes of clients to everyone.
+\item announce the routes of peers to clients.
+\item announce the routes of providers to clients.
+\end{itemize}
+
+It is possible to also set policy in the form of BGP filters.
+Back in 2008, Pakistan telecom hijacked Youtube traffic by announcing a more specific prefix.
+This announcement was not filtered.
+Instead it was filtered and propagated by other AS effectively redirecting Youtube traffic to Pakistan Telecom.
+
+The following is a list of events\footnote{quoted from http://www.circleid.com/posts/ 82258\_pakistan\_hijacks\_youtube\_closer\_look}
+\begin{quote}
+\begin{itemize}
+\item 18:47:45    First evidence of hijacked route propagating in Asia, AS path 3491 17557
+\item 18:48:00    Several big trans-Pacific providers carrying hijacked route (9 ASNs)
+\item 18:48:30    Several DFZ providers now carrying the bad route (and 47 ASNs)
+\item 18:49:00    Most of the DFZ now carrying the bad route (and 93 ASNs)
+\item 18:49:30    All providers who will carry the hijacked route have it (total 97 ASNs)
+\item 20:07:25    YouTube, AS 36561 advertises the /24 that has been hijacked to its providers
+\item 20:07:30    Several DFZ providers stop carrying the erroneous route
+\item 20:08:00    Many downstream providers also drop the bad route
+\item 20:08:30    And a total of 40 some-odd providers have stopped using the hijacked route
+\item 20:18:43    And now, two more specific /25 routes are first seen from 36561
+\item 20:19:37    25 more providers prefer the /25 routes from 36561
+\item 20:28:12    Peers of 36561 start seeing the routes that were advertised to transit at 20:07
+\item 20:50:59    Evidence of attempted prepending, AS path was 3491 17557 17557
+\item 20:59:39    Hijacked prefix is withdrawn by 3491, who disconnect 17557
+\end{itemize}
+\end{quote}
+
+Pakistan Telecom advertised a prefix (208.65.153.0/24) that was more specific that the one advertised by Youtube (208.65.152.0/22) and therefore it was used by BGP routers.
+The response of Youtube was to announce two even more specific routes /25.
