@@ -90,3 +90,68 @@ The following is a list of events\footnote{quoted from http://www.circleid.com/p
 
 Pakistan Telecom advertised a prefix (208.65.153.0/24) that was more specific that the one advertised by Youtube (208.65.152.0/22) and therefore it was used by BGP routers.
 The response of Youtube was to announce two even more specific routes /25.
+
+\section{Path Routing}
+
+To make it possible to implement policy routing, BGP uses path announcement. 
+For example, if G contains the 12.34.56.00/24 network, it will announce it as:
+
+\texttt{through ``G, '' reaches 12.34.56.00/24}.
+
+AS F will re-announce the route as 
+
+\texttt{through ``F, G, '' reaches 12.34.56.00/24}.
+
+And AS D will re-announce the route as 
+
+\texttt{through ``D, F, G, '' reaches 12.34.56.00/24}.
+
+Then AS C compares this announcement with other announcements such as 
+
+\texttt{through ``A, G, '' reaches 12.34.56.00/24}.
+
+And makes a decision according to its policy.
+
+To prevent loops, an AS never accepts a route announcement if it finds itself in the announced path.
+
+\section{Route aggregation}
+
+On of the challenges of the current internet is the growth of the global routing table.
+At the time of writing, a DFZ router can see more than half a million routes.
+A partial solution to the growth of the number of routes is route aggregation.
+
+A BGP router can combine different announcement of consecutive networks in a single one.
+For example, if AS D in Fig.~\ref{fig:peering-and-transit} announces 12.34.58.0/24 and AS E announces 12.34.59.0/24, then AS B can announce 12.34.58.0/23.
+
+\texttt{through ``Sequence(B), Set(D, E) '' reaches 12.34.58.00/23}.
+
+Sequence means that the whole network is announced through B.
+Set means that a fraction of the network is announced through D and E.
+
+\section{BGP connections and messages}
+
+IGP protocols such as OSPF and RIP try to discover neighbouring routers to exchange routes.
+This is not the case with BGP routers.
+In BGP, the administrator configures the BGP neighbours with which the BGP router will exchange routes.
+The two neighbours (or peers) then establish a TCP connection and exchange messages.
+
+The BGP messages are the following:
+\begin{itemize}
+\item OPEN to start the connection.
+\item UPDATE to send routing information. When the routing information changes, the BGP routers will send additional UPDATE messages.
+\item KEEP-ALIVE to maintain the connection open when there is no other data to send.
+\item ROUTE-REFRESH to ask the other party to re-send all routing information.
+\item NOTIFICATION to inform of errors.
+\end{itemize}
+
+The BGP protocol includes a security feature that requires both parties to agree in common secret and use it to derive an MD5 hash of the exchanged messages that is included in the messages.
+The receiving end can re-compute the MD5 value and compare with the received one.
+Using the shared secret, BGP can prevent that a malicious attacker forges BGP messages.
+
+\section{Interior BGP}
+
+It is normal that an autonomous system has multiple connections with other AS.
+It may have different BGP routers at different locations of the network.
+It is necessary that those routers coordinate and for this purpose they can use Interior BGP (or IBGP).
+
+
