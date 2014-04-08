@@ -2,19 +2,36 @@
 
 As the Internet grew it was no longer possible to keep all routers in a single routing domain.
 It was necessary to add another layer of organization.
-All the router that belonged to the same organization and were controlled by the same network administration team were grouped in an Autonomous System.
+All the routers that belonged to the same organization and were controlled by the same network administration team were grouped in an Autonomous System.
 For example, Universitat Pompeu Fabra belongs to autonomous system Red Iris with Autonomous System Number AS766.
 Guifi.net is a community network that has AS49835.
+
+AS numbers (ASN) are assigned by the Internet Assigned Number Authority (IANA) to Regional Internet Registries (RIR).
+RIPE-NCC is the European registry.
+Autonomous Systems have to apply for their ASN to the RIR.
+These steps are also followed for IP addresses assignments.
+
+ASs can be classified in three different types:
+\begin{itemize}
+\item Multi-homed: An AS that is connected to more than one neighbouring AS. 
+Even if one of the neighbours fails, a multi-homed AS can retain Internet connectivity via another neighbour.
+\item Stub AS: In this case, the AS appears to be connected to a single neighbouring AS. 
+It can be that an Stub AS has private peering agreements with other ASs.
+\item Transit AS: An AS that uses its networks to carry traffic of other ASs.
+\end{itemize}
 
 Within an autonomous system, the system administrators configure an Interior Gateway Protocol IGP.
 Examples of IGP are RIP, OSPF and IS-IS.
 The network administration team agrees in the protocol that is going to be used and the per-hop metrics.
 Then the protocol computes the routes that minimize those metrics.
+IGP decide which is the next router in the path towards the destination.
+
 
 There is another layer of routing between Autonomous Systems.
-When a network has a packet destined to another autonomous system, it needs to decide to which neighbouring autonomous system tha packet will be forwarded.
+When a network has a packet destined to another autonomous system, it needs to decide to which neighbouring autonomous system that packet will be forwarded.
 
-The protocol that is used in the Internet to route between Autonmous Systems is the Border Gateway Protocol (BGP).
+
+The protocol that is used in the Internet to route between Autonomous Systems is the Border Gateway Protocol (BGP).
 A key difference between IGPs and BGPs is that the latter routes packets between different organizations that not necessarily trust each other nor share the same goals.
 Choosing the shorter path is not always the best option, and it is not possible in agreeing in common metric for each connection between two ASs.
 If two alternative paths exist, one AS may prefer one path and the other AS the other path.
@@ -154,6 +171,10 @@ It is normal that an autonomous system has multiple connections with other AS.
 It may have different BGP routers at different locations of the network.
 It is necessary that those routers coordinate and for this purpose they can use Interior BGP (or IBGP).
 
+IBGP routers are normally at different borders of the network.
+They are not directly attached to each other.
+They talk using TCP sessions that cross the AS traversing different routers.
+
 
 \begin{figure}[!h]
 \centering
@@ -165,14 +186,6 @@ It is necessary that those routers coordinate and for this purpose they can use 
 Fig~\ref{fig:ibgp} shows an autonomous system with many routers. 
 Three of them are border routers that exchange information between them using IBGP.
 Let's consider that this is AS 33.
-
-If router A receives a router announcement such as 
-
-\texttt{172.16.0.0/16 Sequence(AS22, AS44)}
-
-it will forward it to routers B and C as 
-
-\texttt{172.16.0.0/16 Sequence(AS33, AS22, AS44)}
 
 In IBGP the routers must accept routing advertisements even if there is their own ASN in the path.
 The announcement received via IBGP are not propagated to other IBGP peers.
