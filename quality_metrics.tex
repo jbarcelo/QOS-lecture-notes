@@ -165,7 +165,7 @@ This means 5.26 minutes of (non-scheduled) downtime per year.
 Some common metrics in terms of availability are the mean time between failures (MTBF) and the mean time to restore (MTTR).
 The availability can then be computed as $Availabilty = \frac{MTBF}{MTBF+MTTR}$.
 
-Given a system which is composed of several subsystems either in ``series'' or in ``parallel'', it is possible to compute the syste overall availability.
+Given a system which is composed of several subsystems either in ``series'' or in ``parallel'', it is possible to compute the system overall availability.
 In ``series'' means that the system works only when all subsystems are working, and in ``parallel'' means that the system fails only when all subsystems fail.
 
 \section{Application requirements}
@@ -240,7 +240,7 @@ Token buckets will be covered in more detail in the next chapter.
 An alternative of the CIR/PIR approach is the 95\% percentile billing.
 The client commits to a given data rate.
 Then, the actual traffic is measured in averages of 5 minutes.
-The measure that is using for billing is the one that occupies the 95\% percentile.
+The measure that is used for billing is the one that occupies the 95\% percentile.
 That means that 95\% of the measures are lower that this value and only the 5\% are higher (peaks).
 
 If the measured 95\% percentile is higher than the committed rate, the client has to pay a penalty that is specified in the SLA.
