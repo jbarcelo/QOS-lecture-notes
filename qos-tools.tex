@@ -22,17 +22,17 @@ Sometimes a defective or misconfigured device will also consume as much bandwidt
 For all these reasons, overprovisioning cannot be the answer to everything.
 An alternative to overprovisioning is to use QoS tools to manage the available bandwidth in such a way the different QoS requirements can be met by prioritizing one traffic over the others and shaping the traffic flows.
 
-Using the road analogy, if we have an ambulances with strict delay constraints, we can make the roads wider or use prioritization and other road traffic flow management (such as traffic lamps and reversible lanes).
+Using the road analogy, if we have ambulances with strict delay constraints, we can make the roads wider or use prioritization and other road traffic flow management (such as traffic lamps and reversible lanes).
 
 A QoS solution classifies the traffic into different classes accordingly to SLA requirements and treats each of these classes differently across the network.
 Each of these classes is a ``class of service'' (CoS).
 
 \subsection{Backup and maintenance}
 
-Private users normally have Internet access with no QoS guarantees.
+Private users normally have Internet access with no bandwidth guarantees.
 They pay for a 20 Mbps ADSL line, but how much they can get out of it is unknown.
 
-Business users often choose a service with QoS guarantees, which is much more expensive than the one that has no guarantees.
+Business users often choose a service with bandwidth guarantees, which is much more expensive than the one that has no guarantees.
 Furthermore, for increased reliability, it is normal that business pay for a second line for backup purposes.
 As paying for two high-speed lines would be too expensive, a more economic option is to choose a slow connection for backup.
 
@@ -141,7 +141,7 @@ As an example, it can be used to identify encrypted P2P traffic by identifying p
 \end{itemize}
 
 DPI and SI are computationally expensive.
-It would be desired to perform them only once, rather than repeating the effort in every router.
+It would be desirable to perform them only once, rather than repeating the effort in every router.
 The problem is that all the classification effort is lost after the packet leaves the router, unless the QoS headers are explicitly changed.
 In the next subsection we introduce the marker, which is the tool that changes QoS markings.
 
