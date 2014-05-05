@@ -227,6 +227,9 @@ An alternative implementation of the shaper is to use a leaky bucket instead of 
 The leaky bucket simply stores packets and ``leaks'' them at a given rate.
 Therefore, the leaky bucket does not allow any kind of traffic burstiness.
 
+A shaper is used when the effective use of available bandwidth is more important that the delay.
+Excessive buffer can be detrimental as it increases the delay and interferes with normal operation of the TCP protocol.
+
 \subsection{Queues, droppers and schedulers}
 
 This is a critical component of QoS.
