@@ -5,6 +5,25 @@ A scheduler serves two or more queues and has to take decissions about which que
 The combination of queues and scheduler can change the order of the packets.
 For this reason it is important that all packets of a same flow are mapped to the same queue, to prevent packet re-ordering.
 
+The QoS-aware queues are called software queues.
+The software queues do not store the actual packets. 
+They just store pointers to the actual packets that are stored in memory.
+The queue sizes are typically expressed in number of packets.
+Software queues are placed before the scheduler.
+The scheduler takes packets from the software queues and places them in the Tx-ring.
+
+Considered as whole, the system of a software queues is not FIFO.
+The packets do not necessarily leave the system in the same order that they entered.
+However, each of the queues conforming the system, when considered on its own is FIFO.
+
+The Tx-ring is placed in an area of memory that is directly accessible by the interface hardware.
+The hardware can continuously send the packets found in the tx-ring without requiring the intervention of the CPU.
+The tx-ring is FIFO and the packets leave the tx-ring in the same ordered that they entered.
+
+For the scheduling policy to be effective, it is necessary that the tx-ring is relatively small, typically 2 or 3 packets.
+Otherwise, the queue of packets is build into the tx-ring where the scheduler cannot affect the order in which the packets are sent.
+
+
 \section{Strict Priority Queues}
 
 Prioritizing is a core idea in QoS.
@@ -42,6 +61,10 @@ An intermediate solution between the two mentioned before is fragmenting each pa
 Using this technique we can emulate a behaviour similar to preemptive strict priority.
 As it has been explained in the previous chapter, fragmenting and interleaving are used in low speed lines.
 
+In higher speed lines there is less benefit in interleaving, as the duration of a packet transmission is very short.
+Furthermore, the process of interleaving consumes CPU and introduces some processing delay. 
+As the number of packets per second increases, these two negative aspects become more accentuated.
+
 \subsection{Starvation and policing}
 The problem of strict priority queueing is that the high priority queue can easily eat up all the bandwidth.
 If there are always packets in the high priority queue, the other queues will never be serviced.
@@ -54,6 +77,9 @@ The solution to prevent starvation, is two police the high priority queue.
 The high priority traffic is policed before entering the queue to a fraction of the total bandwidth available in the interface (e.g., 10\% or 30\%).
 By doing so, the other queues are safe from starvation.
 Even if a virus, a worm, or a misconfigured device generates a low of high priority traffic, it will not kill the network.
+
+Another reason for policing a queue with strict priority is to provide bounds on delays.
+The maximum delay suffered by the packets is the depth of the token bucket divided by the line rate.
 
 \section{Round Robin Scheduling and Weighted Round Robin}
 
@@ -72,7 +98,7 @@ This particular approach in which different queues have different weights is cal
 Round robin is flexible and precise when it comes to adjust the number of packets transmitted by each queue.
 The actual bandwidth allocated to each queue depends on the schedule, but also on the length of the packets.
 
-Recovering our example of three queues, if the packets in Q3 are 12000 bits long and the packets of Q1 are 200 bits long, Q3 will receive twice as much bandwidth as Q1.
+Recovering our example of three queues, if the packets in Q3 are 1200 bytes long and the packets of Q1 are 200 bytes long, Q3 will receive twice as much bandwidth as Q1.
 If we want to allocate a fraction of the available bandwidth to each of the queues and we don't know the length of the packets in advance, it will be impossible to use WRR.
 
 \section{General Processor Sharing}
@@ -120,3 +146,61 @@ This packet is being served and the counter decremented.
 The scheduler moves to the first queue again, it increases the counter by the quantum (400) to 600.
 Then it serves the head-of-queue packet, which has 500 bytes, and decrements the deficit counter by 500.
 
+\section{Actual Implementations}
+
+Actual implementations are very different to the simple and structured material presented in this chapter.
+The implementations that we find in practice combine many different elements such as classifiers, policers and schedulers in a single tool.
+
+\subsection{Stochastic Fair Queueing}
+
+Strictly speaking, this is not a scheduling policy.
+It is more a classification approach.
+However, as it is usually presented as a queue, it is worth mentioning here.
+In stochastic fair queueing a large number of queues is used, e.g. 1024.
+Then, for each packet, a hash from the IP addresses, layer 4 protocol and port numbers fields is derived. 
+This has is used to place the packet in one of the queues.
+This ensures that all the packets of the same flow are in the same queue.
+Finally, some kind of scheduling discipline (such as RR or DRR) is used to serve the queues.
+This approach favors flows with less traffic and therefore benefits interactive applications such as SSH.
+
+It is still possible that, by chance, two flows end up in the same queue. 
+To prevent that this detrimental situation affects the flows for a long time, a perturbation to the hash is periodically introduced to randomly compute new queues for all the flows.
+
+\subsection{Some Cisco Queues}
+
+\subsubsection{Cisco's Weighted Fair Queueing}
+
+Cisco's weighted fair queueing is used in low speed interfaces of Cisco routers by default.
+This scheduling algorithm is similar to the above mentioned fair queueing but it uses the concept of sequence number for its implementation.
+It takes into account both the size of the packets and the Type of Service field of the IP header to compute a sequence number that is used to decide the order in which the packets will be transmitted.
+
+\subsubsection{Cisco's Class-Based WFQ}
+
+This scheduler considers different classes and it is possible to reserver a fraction of the total bandwidth for each class.
+The bandwidth reservation can be either an absolute value or a percentage.
+
+\subsubsection{Cisco's Low-latency Queueing}
+
+This a strict priority tool that can be combined with CBWFQ to offer better delay and jitter guarantees to real time traffic.
+The strict priority queue is policed to prevent the starvation of the other queues.
+
+\subsection{Some Linux Queues}
+
+\subsubsection{Linux's PFIFO\_FAST}
+
+This is the default discipline.
+It contains three queues that use strict priority and packets are placed in different queues according to their Type-of-Service field in the IP header.
+We can see the queue length with the command 
+
+\texttt{cat /sys/class/net/eth0/tx\_queue\_len}
+
+\subsubsection{Linux's Stochastic Fair Queueing}
+
+It uses 1024 different queues.
+The parameters include a \emph{limit} which is the size of each of the queues, a \emph{perturb} which determines how often the hashing process will be changed and a \emph{quantum}, which is the amount of bytes to be send from each queue in each round.
+
+\subsection{Linux's Hierarchical Token Bucket}
+
+It allows setting the bandwidth reserved for each class of traffic (\emph{rate}).
+Also the maximum amount of bandwidth consumed by a class of traffic (\emph{ceil}).
+It also offers the possibility of configuring a hierarchy to distribute the bandwidth that is unused by one of the traffic classes.
