@@ -44,19 +44,17 @@ Test your programs with other groups programs to verify interoperability.
 
 \section{A queue}
 
-The second module that you have to construct in this course contains a queue (that includes a dropper a buffer) and a scheduler.
+The second module that you have to construct in this course contains a queue (that includes a dropper and a buffer) and a scheduler.
 
 Note that each module has to be a separate program. The different modules communicate (send packets to each other) using sockets.
 
-This program listens at an udp port and transmits the packets to a given udp port and address. Consequently, it has to be simultaneously an UDP server and an UDP client. You may consider the possibility of using different threads for the dropper and the scheduler.
+This program listens at an UDP port and transmits the packets to a given UDP port and address. Consequently, it has to be simultaneously an UDP server and an UDP client. You may consider the possibility of using different threads for the dropper and the scheduler.
 
 All port numbers and the destination should be configurable as parameters. An additional parameter will configure the queue size (number of packets). If the queue size is set to zero, it means infinite queue length. If a finite queue is used, a taildrop policy will be applied.
 
 The scheduler should be configurable to be able to choose an exponentially distributed service time or a deterministic service time. In either case, the service rate should be taken as an input parameter.
 
 Combine the Buffer with the traffic generator and traffic sink modules to make measures of packet loss and delay.
-
-Prepare a plot comparing the packet delay and packet loss obtained from the simulation and theoretical results.
 
 \begin{figure}[!h]
 \centering
@@ -65,13 +63,16 @@ Prepare a plot comparing the packet delay and packet loss obtained from the simu
 \label{fig:scenario2}
 \end{figure}
 
+
+Prepare a plot comparing the packet delay and packet loss obtained from the simulation and theoretical results.
+
 \section{Priority Queues}
-The third module that you have to construct in this course contains two priority queues (that include a dropper a buffer) and a scheduler.
+The third module that you have to construct in this course contains two priority queues (that include a dropper and a buffer) and a scheduler.
 We will name $H$ the high priority queue and $L$ the low priority queue.
 
 Each module has to be a separate program. The different modules communicate (send packets to each other) using sockets.
 
-This program listens to two udp ports and transmits the packets to a given udp port and address. Consequently, it has to be simultaneously an UDP server and an UDP client. You may consider the possibility of using different threads for the droppers and the scheduler.
+This program listens to two UDP ports and transmits the packets to a given UDP port and address. Consequently, it has to be simultaneously an UDP server and an UDP client. You may consider the possibility of using different threads for the droppers and the scheduler.
 
 The scheduler strictly prioritizes queue $H$.
 That is, it starts to serve queue $L$ only if there are no packets at queue $H$.
@@ -82,9 +83,6 @@ All port numbers and the destination should be configurable as parameters. An ad
 
 The scheduler will draw service times from an exponential distribution.
 
-Combine the priority queues with two traffic sources that generate different classes of traffic and obtain statistics of the delay for each of the traffic classes.
-
-Prepare a plot combining analytical results and simulation results.
 
 \begin{figure}[!h]
 \centering
@@ -93,10 +91,24 @@ Prepare a plot combining analytical results and simulation results.
 \label{fig:scenario3}
 \end{figure}
 
+After you have completed the basic scenario take some measures and explain the results.
+Then you can implement also a classifier as in Fig.~\ref{fig:scenario3_mod} and take additional measures.
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\linewidth]{figures/scenario3_mod.eps}
+\caption{Advanced scenario to test in lab assignment 3.}
+\label{fig:scenario3_mod}
+\end{figure}
+
+Combine the priority queues with two traffic sources that generate different classes of traffic and obtain statistics of the delay for each of the traffic classes.
+
+Prepare plots combining analytical results and simulation results.
+
 \section{Optional QoS Tool}
 
 In this lab assignment you will implement one ore more QoS tools of your choice.
-You can choose any of the tools that we have seen in class, e.g.,  classifier, metering, token-bucket policer, (weighted) RED, weighted taildrod, re-write.
+You can choose any of the tools that we have seen in class, e.g.,  metering, token-bucket policer, (weighted) RED, weighted taildrod, re-write.
 
 A brief description of each of the tools follows:
 \begin{itemize}
