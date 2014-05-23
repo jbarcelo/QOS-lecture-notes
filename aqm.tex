@@ -24,9 +24,9 @@ The CW is increased in one MSS for each received acknowledgement.
 This process is called the slow start phase of TCP.
 Even though it starts slow, the truth is that it is growing exponentially and, at some point, the transmitting rate will exceed the available capacity and a packet will be dropped.
 
-When TCP detects that a single packet has been dropped (signaled by a duplicate ack), it halves its congestion window and starts increasing it linearly at a rate of one MTU for RTT.
+When TCP detects that a single packet has been dropped (signaled by three duplicate acks), it halves its congestion window and starts increasing it linearly at a rate of one MTU for RTT.
 This phase is called congestion avoidance, as TCP slowly grows its congestion window trying to find the limits of the available capacity.
-If another packet loss occurs which results in another duplicate ack, the congestion window is halved again.
+If another packet loss occurs which results in duplicate acks, the congestion window is halved again.
 The result is that the sending rate of TCP approaches the available capacity.
 
 If the loss of a packet is detected due to a timer timeout, TCP assumes that something is very wrong with the network and moves back to the initial slow start behaviour.
@@ -63,7 +63,9 @@ Note that a queue that is full for a long time is not useful for absorbing burst
 Bad queues appear frequently when there is a high-speed to low-speed transition.
 
 A good example is a 1 Gbps home network that connects to an ADSL which can upload 2Mbps.
-If you start to upload a large file to the Internet, TCP will do its best in ``filling the pipe'', and the effect of that action would be to fill the buffer of the ADSL router.
+If you start to upload a large file to the Internet, TCP will do its best in ``filling the pipe''.
+Specifically, TCP will increase its congestion window until it observes packet loss.
+The effect of increasing the congestion window is to fill the buffer that precedes the bottleneck, which is the ADSL router.
 If that router has a large buffer, it will introduce a lot of delay.
 TCP will believe that it is dealing with a ``long pipe'', as the delay is long, and will persist in the efforts of filling it.
 
@@ -81,15 +83,16 @@ As memory got cheaper, manufacturers beefed up their devices with more memory.
 This turned out not to be an improvement on the network performance, as larger buffers resulted in ``bufferbloat''.
 
 It is obvious that it is good to keep queues to a limited size, e.g., to avoid infinite queues.
-A first possibility, is to have a queue size and drop packets that arrive when the queue is full.
+A first possibility, is to drop packets only when the  queue is full.
 This approach is called taildrop, as packets are dropped from the tail of the queue.
 
-The size of the queue can be measured in packets, in bytes or in milliseconds.
-To make the measure in time, we need to take into account the speed of the interface.
-This is normally a good idea, as the amount of data that needs to be buffered is closely related to the speed  of the line.
-Expressing the queue length in time also gives a direct idea of the delay that the queue can introduce.
+%The size of the queue can be measured in packets, in bytes or in milliseconds.
+%To make the measure in time, we need to take into account the speed of the interface.
+%This is normally a good idea, as the amount of data that needs to be buffered is closely related to the speed  of the line.
+%Expressing the queue length in time also gives a direct idea of the delay that the queue can introduce.
 
-As an example, a 10 ms queue size seems to be a fair size for many applications.
+In determining the queue size, it is important to calculate the delay that it introduces taking into account the speed of the interface.
+As an example, a 5 ms queue size seems to be a fair size for many applications.
 A 10 seconds queue is probably excessive for many applications, such as web browsing.
 
 In the simplest approach, all the packets arriving to a taildrop queue are subject to the same restrictions.
@@ -99,7 +102,7 @@ Otherwise, it is accepted.
 It is possible to refine this approach taking into consideration QoS differentiation.
 Imagine that in a previous stage we have marked packets as being either in-contract or out-of-contract.
 Then we can set two different queue sizes for different packets.
-We can accept in-contract packets if the queue size is below 10 ms and out-of-contract packets if the queue size is below 5 ms.
+We can accept in-contract packets if the queue size is below 20 packets and out-of-contract packets if the queue size is below 10 packets.
 In this case, out-of-contact traffic has a higher dropping precedence that in-contract traffic, and we lessen the extent to which in-contract traffic can be delayed (or even dropped) due to out-of-contract traffic.
 
 The technique that uses different queue sizes for different packets is called weighted tail drop.
@@ -127,7 +130,7 @@ In the latter, the queue is empty for a substantial fraction of time.
 Ideally we would like that there was always a packet ready to be transmitted, to take full advantage of the link capacity.
 Simultaneously, we would like that there was only a single packet, as the presence of many packet introduces unnecessary delay.
 
-Active queue management (AQM) addresses tries to address these problems.
+Active queue management (AQM) addresses these problems.
 
 \section{Random Early Detection}
 
@@ -194,5 +197,8 @@ The reasons are that, for being effective, it is necessary that both endpoints a
 Furthermore, there are broken implementations in networking devices that do not recognize ECN and simply drop the packets that include 10 or 01 in the ECN field.
 
 \section{CoDel}
-The latest trend in AQM is Controlled Delay (or CoDel) \cite{nichols2012cqd}, which discards packets when the minimum queue occupation exceeds a threshold (in time).
-This technique seem to be easier to configure and provide better link utilization while preventing bufferbloat.
+The latest trend in AQM is Controlled Delay (or CoDel) \cite{nichols2012cqd}.
+CoDel monitors which is the minimum delay suffered by the sent packets in a 100ms interval.
+If it exceeds 5 ms, it drops a packet and shortens the monitoring interval.
+Packets are being dropped and the intervals are reduced until the minimum packet delay of the interval is below 5ms.
+When this occurs, no packet is dropped and the interval is restored to the original 100ms.
