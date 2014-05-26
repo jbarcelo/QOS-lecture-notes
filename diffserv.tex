@@ -1,14 +1,14 @@
 \chapter{Differentiated Services}
 
 The IETF has proposed two main solutions for the Internet QoS architecture: Integrated Services and Differentiated Services \cite{rfc2475}.
-The first one implies per flow signaling and reservation, and therefore it does not scale well in large network.
+The first one implies per flow signaling and reservation, and therefore it does not scale well in large networks.
 The focus of this chapter is on the second alternative.
 In differentiated services, traffic is classified in a reduced number of classes, typically less than eight.
-The routers implement different PHB for the different classes, which provide the desired QoS.
+The routers implement different PHBs for the different classes, which provide the desired QoS.
 
 Note that since in Diffserv there is not a per flow signaling and admission control, in principle it does not guarantee that the QoS requirements are actually satisfied.
 In reality, this is achieved with a combination of traffic conditioning at the edge of the network and capacity planning.
-This is not an exact science, but we'll cover the basics through examples and typical configurations.
+This is not an exact science.
 
 \section{Key aspects of DiffServ}
 DiffServ is an scalable solution for QoS provisioning in IP networks.
@@ -24,7 +24,7 @@ Three key aspects of DiffServ are border traffic conditioning, DiffServ markings
 
 Together with the SLA, a traffic conditioning agreement (TCA) is also established.
 The TCA is often defined as a packet marking combined with token bucket, of a given rate and depth.
-For example, it may specify that packets with VoIP traffic will conform to a token bucket of rate 1Mbps and depth 1Kbps.
+For example, it may specify that packets with VoIP traffic will conform to a token bucket of rate 1Mbps and depth 1Kb.
 
 At the edge of the network, the routers will perform classifying, metering and policing to ensure that the offered load complies with the specified TCA.
 The traffic exceeding the TCA may be either dropped or marked as non-conformant.
@@ -113,7 +113,7 @@ RFC 2597 \cite{rfc2597} recommends the following DSCP values for AF.
 
 \subsection{Class Selector (CS)}
 This was included to provide some kind of backward compatibility with pre-DiffServ approaches.
-The first three bits (0-2) to indicate precedence: higher value means higher precedence.
+The first three bits (0-2) are used to indicate precedence: higher value means higher precedence.
 A practical use is to ease mapping from IP QoS markings to EXP QoS markings.
 The recommended DSCPs take the form XXX000BIN.
 
