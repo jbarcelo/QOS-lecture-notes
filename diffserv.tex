@@ -59,7 +59,7 @@ A recommendation combines a description of the PHB with a suggested DSCP.
 \subsection{Default PHB}
 
 It is a required behaviour and it is assigned the DSCP 000000BIN.
-RFC 4594 \cite{rfc4594} specify that there is typically some bandwidth guarantee for this kind of traffic, but the packets can be lost, reordered, duplicated or delayed at random.
+RFC 4594 \cite{rfc4594} specifies that there is typically some bandwidth guarantee for this kind of traffic, but the packets can be lost, reordered, duplicated or delayed at random.
 
 \subsection{Expedited Forwarding (EF)}
 Expedited Forwarding (EF) is defined in \cite{rfc3246} and uses the code point 101110BIN (46DEC).
@@ -83,7 +83,7 @@ Assured Forwarding is actually a group defined in RFC 2597 \cite{rfc2597} that c
 The packets belonging to this group will be forwarded if the offered rate is kept below the committed rate.
 It differentiates four different classes: AF1x, AF2x, AF3x and AF4x.
 AF1x is the lowest priority and AF4x is the higher priority.
-A typical implementation is to assign each of the classes to a queue and use DRR to distribute the bandwidth among the classes.
+A typical implementation is to assign each of the classes to a queue and use DWRR to distribute the bandwidth among the classes.
 
 Within each of the classes, there are three possible drop precedences.
 As an example, we have AF11, AF12 and AF13.

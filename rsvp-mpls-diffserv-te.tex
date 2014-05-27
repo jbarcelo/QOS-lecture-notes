@@ -2,12 +2,12 @@
 
 In this chapter we will present an overview of a set of technologies that offer a tight control on QoS.
 This control comes at the price of complexity, but the ISPs and the manufacturers have decided that QoS is worth it.
-This technologies offer control on the path followed by the packets, bandwidth reservation (and therefore guarantees) and fast re-route capabilities.
+These technologies offer control on the path followed by the packets, bandwidth reservation (and therefore guarantees) and fast re-route capabilities.
 
 \section{Multi Protocol Label Switching (MPLS)}
 
 In the IP paradigm, the routers forward the packets based on the destination IP of the packet.
-MPLS offers a completely different alterative, in which the forwarding is not done using the destination address.
+MPLS offers a completely different alternative, in which the forwarding is not done using the destination address.
 Instead, labels are used at each hop to decide the outgoing interface.
 This approach is called ``virtual circuit packet network'' as it somehow emulates a circuit on a packet network, and it is opposed to the ``datagram'' IP paradigm.
 The virtual circuit approach has some advantages and disadvantages compared to the datagram approach.
@@ -84,7 +84,7 @@ Note that it does not matter what the packet is.
 Whatever it is, it will be taken from one site and delivered to the other.
 
 From the company's perspective, it is exactly the same as having a pipe that connects the two sites.
-In order to guarantee a given bandwidth and delay, the ISP must make a reservation in all the packets that are traversed by the LSP from Girona to Tarragona.
+In order to guarantee a given bandwidth and delay, the ISP must make a reservation in all the routers that are traversed by the LSP from Girona to Tarragona.
 This reservation has to be in terms of bandwidth and buffer space to accommodate the burst size.
 The protocol used to make the reservation for the LSP of the VPN is called ``Resource Reservation Protocol for Traffic Engineering'' (RSVP-TE).
 
@@ -93,7 +93,7 @@ The protocol used to make the reservation for the LSP of the VPN is called ``Res
 When a new LSP needs to be established, the first step is to decide the path that it will take.
 This step is performed with the constrained shortest past first (CSPF) protocol.
 CSPF is very similar to the popular open shortest path first (OSPF) protocol.
-The only difference is that in CSPF we can apply some constraints to prune the tree.
+The only difference is that in CSPF we can apply some constraints to prune the links that do not satisfy the constraints.
 
 This constraints can be placed in terms of bandwidth availability or ``colors''.
 The ``colors'' simply mark a given property of a link.
@@ -111,7 +111,7 @@ When the ``path'' messages reaches the LSP tailend, the tailend router creates a
 The ``rsvp'' message is the one that actually creates the reservation.
 The only purpose of the ``path'' message is to mark the forward path.
 Remember that the paths on a data network are not necessarily symmetrical.
-For this reason, it is needed that the ``path'' message if forwarded using the routing protocol from the headend to the tailend.
+For this reason, it is needed that the ``path'' message is forwarded using the routing protocol from the headend to the tailend.
 The ``rsvp'' message is not forwarded using the routing protocol, but with the information gathered by the ``path'' message.
 
 The ``path'' and the ``rsvp'' messages contain the information about the stream, in terms of data rate and bucket size.
